@@ -12,13 +12,28 @@
 #define DHTTYPE DHT11
 
 #include "DHT.h"
-#include "servo_motor_impl.h"
-
+#include "Timer.h"
 DHT dht(SENS_TEMP_HUM, DHTTYPE);
-ServoMotor* pMotor;
+//ServoMotor* pMotor;
+
+Timer* timer;
+/*Timer* errorTimer;
+Timer* sleepTimer;*/
 
 const double vs = 331.45 + 0.62*20;
-int pos, delta;
+int pos, delta, fadeValue;
+boolean startSystemDetected, errorSystem;
+
+
+const int SLEEP_TIME  = 5000;
+const int MAX_TIME = 20000; 
+const int ERROR_TIME = 2000; 
+/*
+  MINFREQ = 1 Hz
+  MAXFREQ = 50 Hz
+  MAXVEL = TBD
+*/
+
 
 void setup(){
   pinMode(PIR,INPUT);
@@ -30,36 +45,64 @@ void setup(){
   pinMode(SONAR_TRIG, OUTPUT);
   pinMode(LED_UNO,OUTPUT);
   pinMode(LED_DUE,OUTPUT);
+
+
+  //quando parte l'esperimento (Button start), allora faccio partire questo timer
+  timer = new Timer();
+
+  //quando parte ma il pir non localizza, allora faccio partire questo timer
+  /*errorTimer = new Timer();
+  errorTimer -> setupPeriod(ERROR_TIME);
+
+  //quando non viene fatto partire l'esperimento, allora faccio partire questo timer
+  sleepTimer = new Timer();
+  sleepTimer -> setupPeriod(SLEEP_TIME);*/
+
+  
+  //pMotor = new ServoMotorImpl(6);
+  //attachInterrupt(digitalPinToInterrupt(PIR), wakeUpSystem, RISING); 
+  
+  pos, fadeValue = 0;
+  delta = 1;
+  startSystemDetected, errorSystem = false;
+  //time = 0;
   
   Serial.begin(9600);
   
   Serial.print("Calibrating sensors... ");
   
-  for(int i = 0; i < CALIBRATION_TIME_SEC; i++){
+  /*for(int i = 0; i < CALIBRATION_TIME_SEC; i++){
     Serial.print(".");
     delay(1000);
   }
   
   Serial.println("PIR SENSOR READY.");
-  dht.begin("DHT SENSOR READY.");
-
-  pMotor = new ServoMotorImpl(6);
-  pos = 0;
-  delta = 1;
+  dht.begin("DHT SENSOR READY.");*/
   
   delay(50);
 }
 void loop() {
+  timer -> setupPeriod(SLEEP_TIME);
+  timer -> printCurrentTime();
+  Serial.print("Millisec: ");
+  Serial.println(millis());
+  /*while(startSystemDetected != true){
+    idlePeriod();
+  }*/
+}
 
-  //Testing_Components
+/*void idlePeriod(){
+  if(digitalRead(BUTTON_START) == HIGH){
+    startSystemDetected = true;
+    if(digitalRead(PIR) != HIGH)
+      systemError();
+  }
+}
 
-  //switchOnLeds(); 
-  //readFromButtons();
-  //detectPir(); 
-  //readDHT(); 
-  //readFromPot(); 
-  //readFromSonar();
-  //testServo();
+void systemError(){
+  //time = millis();
+  //fadeValue = 128+127*cos(2*PI/2000*time);
+  //analogWrite(LED_DUE, fadeValue);
 }
 
 void detectPir(){
@@ -134,3 +177,14 @@ void testServo(){
   delta = -delta;
   delay(1000);
 }
+
+void sleepySystem(){
+  Serial.flush();
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);  
+  sleep_enable();
+  sleep_mode();  
+}
+
+void wakeUpSystem(){
+  sleep_disable();
+}*/
