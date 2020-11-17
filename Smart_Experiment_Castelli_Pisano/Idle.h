@@ -10,9 +10,9 @@ class Idle: public Task{
   int pinLed1;
   int pinLed2;
   int pinButton;
-  Light* led1;
-  Light* led2;
-  ClickedButton* button; 
+  LedImpl* led1;
+  LedImpl* led2;
+  Button* button; 
   enum { ON, OFF } stateLed1, stateLed2;
   enum { CLICKED, NOTCLICKED } stateButton;
   

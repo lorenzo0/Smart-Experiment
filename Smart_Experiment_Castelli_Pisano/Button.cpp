@@ -7,9 +7,3 @@ Button::Button(int pinButton){
   this->pinButton = pinButton;
   pinMode(pinButton,INPUT);
 }
-
-void Button::getButtonState(){
-  Serial.println("Ci sono!");
-  resultButtonState = 1;
-  //tick finisce
-}

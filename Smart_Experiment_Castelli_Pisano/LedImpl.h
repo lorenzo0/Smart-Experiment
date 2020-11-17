@@ -1,11 +1,10 @@
-#ifndef __LIGHT__
-#define __LIGHT__
+#ifndef __LEDIMPL_
+#define __LEDIMPL_
 
-class Light {
+class LedImpl {
 public:
   virtual void switchOn() = 0;
   virtual void switchOff() = 0;    
 };
 
 #endif
-

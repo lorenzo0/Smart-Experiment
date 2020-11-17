@@ -1,14 +1,10 @@
 #ifndef __BUTTON__
 #define __BUTTON__
 
-#include "ClickedButton.h"
-
-
-class Button: public ClickedButton { 
+class Button{
   
 public:
   Button(int pinButton);
-  void getButtonState();
   
 private:
   int pinButton;  

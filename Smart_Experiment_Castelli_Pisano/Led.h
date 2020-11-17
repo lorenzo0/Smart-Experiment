@@ -1,9 +1,9 @@
 #ifndef __LED__
 #define __LED__
 
-#include "Light.h"
+#include "LedImpl.h"
 
-class Led: public Light { 
+class Led: public LedImpl { 
 public:
   Led(int pin);
   void switchOn();

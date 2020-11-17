@@ -17,7 +17,7 @@ void Idle::init(int period){
   led2 = new Led(pinLed2);
   
   button = new Button(pinButton);
-  enableInterrupt(pinButton, prova, RISING);
+  enableInterrupt(pinButton, handleInterrupts, RISING);
 
   led1 -> switchOff();
   stateLed1 = OFF;
@@ -33,5 +33,5 @@ void Idle::tick(){
 }
 
 void static Idle::handleInterrupts(){
-  stopTask = true;
+  //qui funziona ma dobbiamo stoppare il task
 }
