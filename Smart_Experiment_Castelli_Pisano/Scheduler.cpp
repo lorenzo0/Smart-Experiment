@@ -1,15 +1,15 @@
 #include "Scheduler.h"
 #include <TimerOne.h>
 
-volatile bool timerFlag;
+volatile bool timerFlagScheduler;
 
 void timerHandler(void){
-  timerFlag = true;
+  timerFlagScheduler = true;
 }
 
 void Scheduler::init(int basePeriod){
   this->basePeriod = basePeriod;
-  timerFlag = false;
+  timerFlagScheduler = false;
   long period = 1000l*basePeriod;
   Timer1.initialize(period);
   Timer1.attachInterrupt(timerHandler);
@@ -27,8 +27,8 @@ bool Scheduler::addTask(Task* task){
 }
   
 void Scheduler::schedule(){   
-  while (!timerFlag){}
-  timerFlag = false;
+  while (!timerFlagScheduler){}
+  timerFlagScheduler = false;
 
   for (int i = 0; i < nTasks; i++){
     if (taskList[i]->updateAndCheckTime(basePeriod)){

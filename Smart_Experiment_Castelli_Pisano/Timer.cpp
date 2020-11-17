@@ -8,7 +8,7 @@ ISR(TIMER1_COMPA_vect){
 }
 
 Timer::Timer(){
-  timerFlag = false;  
+  timerFlag = false;
 }
 
 /* period in ms */
