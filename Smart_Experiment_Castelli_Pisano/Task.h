@@ -3,13 +3,53 @@
 #include "Arduino.h"
 
 class Task {
+
+private: 
+
   int myPeriod;
   int timeElapsed;
+  boolean active;
+  bool periodic;
+  bool completed;
   
 public:
+
+   /* periodic */
   virtual void init(int period){
-    myPeriod = period;  
+    myPeriod = period;
+    periodic = true;  
+    active = true;
     timeElapsed = 0;
+  }
+
+  /* aperiodic */
+  virtual void init(){
+    timeElapsed = 0;
+    periodic = false;
+    active = true;
+    completed = false;
+  }
+
+  void setCompleted(){
+    completed = true;
+    active = false;
+  }
+
+  bool isCompleted(){
+    return completed;
+  }
+
+  bool isPeriodic(){
+    return periodic;
+  }
+
+  bool isActive(){
+    return active;
+  }
+
+  virtual void setActive(bool active){
+    timeElapsed = 0;
+    this->active = active;
   }
 
   virtual void tick() = 0;

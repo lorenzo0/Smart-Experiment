@@ -12,6 +12,7 @@ Idle::Idle(int pinLed1, int pinLed2, int pinButton){
 
 void Idle::init(int period){
   Task::init(period);
+  Task::setActive(true);
   
   led1 = new Led(pinLed1);
   led2 = new Led(pinLed2);
@@ -33,5 +34,5 @@ void Idle::tick(){
 }
 
 void static Idle::handleInterrupts(){
-  //qui funziona ma dobbiamo stoppare il task
+  Task::setCompleted(true)
 }
