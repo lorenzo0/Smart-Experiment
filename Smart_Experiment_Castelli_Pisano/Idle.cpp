@@ -3,6 +3,7 @@
 #include <EnableInterrupt.h>
 
 boolean stopTask;
+const int SLEEP_TIME  = 5 * 1000;
 
 Idle::Idle(int pinLed1, int pinLed2, int pinButton){
   this -> pinLed1 = pinLed1;
@@ -13,7 +14,6 @@ Idle::Idle(int pinLed1, int pinLed2, int pinButton){
 
 void Idle::init(int period){
   Task::init(period);
-  Task::setActive(true);
   
   led1 = new Led(pinLed1);
   led2 = new Led(pinLed2);
@@ -28,14 +28,28 @@ void Idle::init(int period){
   stateLed2 = ON;
   
   stateButton = NOTCLICKED;
+  Task::ts0 = millis();
 }
 
 void Idle::tick(){
+  Task::currentTs = millis();
+
+  /*Serial.print("ts: ");
+  Serial.println(Task::currentTs);
+
+  Serial.print("ts0: ");
+  Serial.println(Task::ts0);
+
+  Serial.print("Task time: ");
+  Serial.println(Task::currentTs - Task::ts0);*/
+
+  
   if(stopTask)
+    Task::setInterrupted();
+  else if(Task::currentTs - Task::ts0 > SLEEP_TIME)
     Task::setCompleted();
 }
 
 void static Idle::handleInterrupts(){
   stopTask = true;
-  Serial.println("hey!");
 }

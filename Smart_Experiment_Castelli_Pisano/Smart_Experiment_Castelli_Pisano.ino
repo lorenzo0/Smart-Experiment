@@ -13,6 +13,7 @@
 
 #include "Scheduler.h"
 #include "Idle.h"
+#include "ErrorTask.h"
 
 Scheduler scheduler;
 
@@ -37,9 +38,13 @@ void setup(){
   Serial.begin(9600);
  
   Task* idleTask = new Idle(LED_UNO, LED_DUE, BUTTON_END);
-  idleTask->init(SLEEP_TIME);
+  idleTask -> init(SLEEP_TIME);
+
+  Task* errorTask = new ErrorTask(LED_DUE);
+  errorTask -> init(ERROR_TIME);
 
   scheduler.addTask(idleTask);
+  scheduler.addTask(errorTask);
 }
 
 void loop() {

@@ -10,34 +10,50 @@ private:
   int timeElapsed;
   boolean active;
   bool periodic;
+  bool completed;
+  bool interrupted;
   
 public:
 
-  bool completed;
+  long ts0, currentTs;
 
    /* periodic */
   virtual void init(int period){
     myPeriod = period;
     periodic = true;  
     active = true;
+    interrupted = false;
+    completed = false;
     timeElapsed = 0;
   }
 
   /* aperiodic */
   virtual void init(){
-    timeElapsed = 0;
     periodic = false;
     active = true;
     completed = false;
+    interrupted = false;
+    timeElapsed = 0;
   }
 
   void setCompleted(){
     completed = true;
     active = false;
+    interrupted = false;
+  }
+  
+  void setInterrupted(){
+    completed = false;
+    active = false;
+    interrupted = true;
   }
 
   bool isCompleted(){
     return completed;
+  }
+
+  bool isInterrupted(){
+    return interrupted;
   }
 
   bool isPeriodic(){
@@ -47,12 +63,7 @@ public:
   bool isActive(){
     return active;
   }
-
-  virtual void setActive(bool active){
-    timeElapsed = 0;
-    this->active = active;
-  }
-
+  
   virtual void tick() = 0;
 
   bool updateAndCheckTime(int basePeriod){
