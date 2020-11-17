@@ -27,21 +27,17 @@ bool Scheduler::addTask(Task* task){
 }
   
 void Scheduler::schedule(){   
-  while (!timerFlag){}
-  timerFlag = false;
+  while (!timerFlagScheduler){}
+  timerFlagScheduler = false;
 
   for (int i = 0; i < nTasks; i++){
     if (taskList[i]->isActive()){
-      if (taskList[i]->isPeriodic()){
         if (taskList[i]->updateAndCheckTime(basePeriod)){
+            if (taskList[i]->isCompleted())
+              taskList[i]->setActive(false);
+            
           taskList[i]->tick();
         }
-      } else {
-        taskList[i]->tick();
-        if (taskList[i]->isCompleted()){
-          taskList[i]->setActive(false);
-        }
-      }
-    }
+    } 
   }
 }

@@ -10,9 +10,10 @@ private:
   int timeElapsed;
   boolean active;
   bool periodic;
-  bool completed;
   
 public:
+
+  bool completed;
 
    /* periodic */
   virtual void init(int period){

@@ -45,7 +45,3 @@ void setup(){
 void loop() {
   scheduler.schedule();
 }
-
-void prova(){
-  Serial.println("Ciao");
-}

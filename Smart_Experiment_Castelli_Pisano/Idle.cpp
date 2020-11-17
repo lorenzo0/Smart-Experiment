@@ -8,6 +8,7 @@ Idle::Idle(int pinLed1, int pinLed2, int pinButton){
   this -> pinLed1 = pinLed1;
   this -> pinLed2 = pinLed2;
   this -> pinButton = pinButton;
+  stopTask = false;
 }
 
 void Idle::init(int period){
@@ -30,9 +31,11 @@ void Idle::init(int period){
 }
 
 void Idle::tick(){
-  Serial.println("Tick");
+  if(stopTask)
+    Task::setCompleted();
 }
 
 void static Idle::handleInterrupts(){
-  Task::setCompleted(true)
+  stopTask = true;
+  Serial.println("hey!");
 }
