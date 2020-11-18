@@ -2,14 +2,14 @@
 #include "Arduino.h"
 #include <EnableInterrupt.h>
 
-boolean stopTask;
 const int SLEEP_TIME  = 5 * 1000;
+bool stopIdle;
 
 Idle::Idle(int pinLed1, int pinLed2, int pinButton){
   this -> pinLed1 = pinLed1;
   this -> pinLed2 = pinLed2;
   this -> pinButton = pinButton;
-  stopTask = false;
+  stopIdle = false;
 }
 
 void Idle::init(int period){
@@ -44,12 +44,12 @@ void Idle::tick(){
   Serial.println(Task::currentTs - Task::ts0);*/
 
   
-  if(stopTask)
+  if(stopIdle){
     Task::setInterrupted();
-  else if(Task::currentTs - Task::ts0 > SLEEP_TIME)
+  }else if(Task::currentTs - Task::ts0 > SLEEP_TIME)
     Task::setCompleted();
 }
 
-void static Idle::handleInterrupts(){
-  stopTask = true;
+void Idle::handleInterrupts(){
+  stopIdle = true;
 }
