@@ -8,7 +8,7 @@ private:
 
   int myPeriod;
   int timeElapsed;
-  boolean active;
+  bool active;
   bool periodic;
   bool completed;
   bool interrupted;
@@ -17,6 +17,7 @@ private:
 public:
 
   long ts0, currentTs;
+  //bool stopTask;
 
    /* periodic */
   virtual void init(int period){
