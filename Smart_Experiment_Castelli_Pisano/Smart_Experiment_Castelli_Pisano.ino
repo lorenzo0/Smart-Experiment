@@ -33,18 +33,23 @@ void setup(){
   pinMode(LED_UNO,OUTPUT);
   pinMode(LED_DUE,OUTPUT);
 
-  scheduler.init(100);
+  
 
   Serial.begin(9600);
- 
-  Task* idleTask = new Idle(LED_UNO, LED_DUE, BUTTON_END);
-  idleTask -> init(SLEEP_TIME);
-
   Task* errorTask = new ErrorTask(LED_DUE);
+  Task* idleTask = new Idle(LED_UNO, LED_DUE, BUTTON_END);
+
+  scheduler.init(100);
+  
+  idleTask -> init(SLEEP_TIME);
+  idleTask -> setActive(true);
+  
   errorTask -> init(ERROR_TIME);
+  errorTask -> setActive(false);
 
   scheduler.addTask(idleTask);
   scheduler.addTask(errorTask);
+  
 }
 
 void loop() {

@@ -12,6 +12,7 @@ private:
   bool periodic;
   bool completed;
   bool interrupted;
+  int nameNextTask;
   
 public:
 
@@ -21,7 +22,6 @@ public:
   virtual void init(int period){
     myPeriod = period;
     periodic = true;  
-    active = true;
     interrupted = false;
     completed = false;
     timeElapsed = 0;
@@ -30,7 +30,6 @@ public:
   /* aperiodic */
   virtual void init(){
     periodic = false;
-    active = true;
     completed = false;
     interrupted = false;
     timeElapsed = 0;
@@ -48,6 +47,20 @@ public:
     interrupted = true;
   }
 
+  void setNextTask(int nameNextTask){
+    this -> nameNextTask = nameNextTask;
+  }
+
+  void setActive(boolean cond){
+    timeElapsed = 0;
+    active = cond;
+    ts0 = millis();
+  }
+
+  int getNextTask(){
+    return nameNextTask;
+  }
+  
   bool isCompleted(){
     return completed;
   }

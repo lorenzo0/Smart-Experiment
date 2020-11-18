@@ -1,5 +1,6 @@
 #include "Idle.h"
 #include "Arduino.h"
+#include "Scheduler.h"
 #include <EnableInterrupt.h>
 
 boolean stopTask;
@@ -28,26 +29,19 @@ void Idle::init(int period){
   stateLed2 = ON;
   
   stateButton = NOTCLICKED;
-  Task::ts0 = millis();
 }
 
 void Idle::tick(){
+  Serial.println("Idle");
   Task::currentTs = millis();
-
-  /*Serial.print("ts: ");
-  Serial.println(Task::currentTs);
-
-  Serial.print("ts0: ");
-  Serial.println(Task::ts0);
-
-  Serial.print("Task time: ");
-  Serial.println(Task::currentTs - Task::ts0);*/
-
   
-  if(stopTask)
+  if(stopTask){
     Task::setInterrupted();
-  else if(Task::currentTs - Task::ts0 > SLEEP_TIME)
-    Task::setCompleted();
+    stopTask = false;
+  }else if(Task::currentTs - Task::ts0 > SLEEP_TIME){
+    Task::setCompleted();    
+    Task::setNextTask(1);
+  }
 }
 
 void static Idle::handleInterrupts(){
