@@ -17,10 +17,11 @@ public:
   void init(int basePeriod);  
   virtual bool addTask(Task* task);  
   virtual void schedule();
-  virtual void redirectTask(int currentState);
+  virtual void redirectTask(int nextState);
 };
 
 /*0 è idle
-1 è error*/
+1 è error
+2 sleep*/
 
 #endif

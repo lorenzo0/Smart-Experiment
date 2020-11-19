@@ -3,7 +3,6 @@
 
 long time; 
 float fadeValue;
-//sarebbe 2
 const int ERROR_TIME = 2 * 1000;
 
 ErrorTask::ErrorTask(int pinLed2){
@@ -16,14 +15,13 @@ void ErrorTask::init(int period){
   Task::init(period);
     
   led2 = new Led(pinLed2);
-  //Task::ts0 = millis();
   
   led2 -> switchOn();
   stateLed2 = ON;
 }
 
 void ErrorTask::tick(){
-  Serial.println("ErrorTask");
+  //Serial.println("ErrorTask");
   Task::currentTs = millis();
 
   if(Task::currentTs - Task::ts0 > ERROR_TIME){

@@ -4,7 +4,7 @@
 class Pir{ 
 public:
   Pir(int pinPir);
-  int checkPresence();  
+  int getPresence();  
   
 private:
   int pinPir;  

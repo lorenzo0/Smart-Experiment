@@ -1,7 +1,6 @@
 #include "Idle.h"
 #include "Arduino.h"
 #include "Scheduler.h"
-#include <EnableInterrupt.h>
 
 const int SLEEP_TIME  = 5 * 1000;
 bool stopIdle;
@@ -20,7 +19,6 @@ void Idle::init(int period){
   led2 = new Led(pinLed2);
   
   button = new Button(pinButton);
-  enableInterrupt(pinButton, handleInterrupts, RISING);
 
   led1 -> switchOff();
   stateLed1 = OFF;
@@ -32,15 +30,16 @@ void Idle::init(int period){
 }
 
 void Idle::tick(){
-  Serial.println("Idle");
+  //Serial.println("Idle");
   Task::currentTs = millis();
-+
-  if(stopTask){
+
+  if(stopIdle){
     Task::setInterrupted();
-    stopTask = false;
-  }else if(Task::currentTs - Task::ts0 > SLEEP_TIME){
-    Task::setCompleted();    
+    stopIdle = false;
     Task::setNextTask(1);
+  }else if(Task::currentTs - Task::ts0 > SLEEP_TIME){
+    Task::setCompleted(); 
+    Task::setNextTask(2);
   }
 }
 

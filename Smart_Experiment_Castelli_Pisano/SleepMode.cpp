@@ -4,37 +4,45 @@
 #include <avr/sleep.h>
 
 bool stopSleepMode;
-int pinState;
 
-SleepMode::SleepMode(int pinLed1, int pinButton, int pinPir){
+SleepMode::SleepMode(int pinLed1, int pinPir){
   this -> pinLed1 = pinLed1;
-  this -> pinButton = pinButton;
   this -> pinPir = pinPir;
   stopSleepMode=false;
 }
-
 
 void SleepMode::init(){
   Task::init();
   
   led1 = new Led(pinLed1);
- 
-  button = new Button(pinButton);
-
   pir = new Pir(pinPir);
-  
-  led1 -> switchOff();
-  stateLed1 = OFF;
-  stateButton = NOTCLICKED;
-
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN);  
-  sleep_enable();
-  sleep_mode();
 }
 
 void SleepMode::tick(){
-  Serial.println("Tick");
-  pinState = pir->checkPresence();
-  if(pinState == 1)
-    Task::setInterrupted();
+
+  sleep();
+  
+  Task::setInterrupted();
+  Task::setNextTask(0);
+  /*Serial.println("PIR has detected something, wake up uaio");
+  Serial.println(pir->getPresence());*/
+  stopSleepMode = false;
+}
+
+void SleepMode::sleep(){ 
+  sleep_enable();
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
+  
+  led1 -> switchOff();
+  stateLed1 = OFF;
+
+  Serial.println("Going to sleep...");
+  delay(200);
+  
+  sleep_cpu();
+}
+
+void SleepMode::wakeUp(){
+  sleep_disable();
+  stopSleepMode=true;
 }

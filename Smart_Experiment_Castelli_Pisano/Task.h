@@ -17,8 +17,7 @@ private:
 public:
 
   long ts0, currentTs;
-  //bool stopTask;
-
+  
    /* periodic */
   virtual void init(int period){
     myPeriod = period;

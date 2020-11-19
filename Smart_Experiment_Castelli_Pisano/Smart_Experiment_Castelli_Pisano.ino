@@ -14,6 +14,7 @@
 #include "Scheduler.h"
 #include "Idle.h"
 #include "ErrorTask.h"
+#include "SleepMode.h"
 
 Scheduler scheduler;
 
@@ -33,12 +34,21 @@ void setup(){
   pinMode(LED_UNO,OUTPUT);
   pinMode(LED_DUE,OUTPUT);
 
-  
-
   Serial.begin(9600);
+
+  Serial.print("Calibrating sensors... ");
+  
+  for(int i = 0; i < CALIBRATION_TIME_SEC; i++){
+    Serial.print(".");
+    delay(1000);
+  }
+  
+  Serial.println("PIR SENSOR READY.");
+  
   Task* errorTask = new ErrorTask(LED_DUE);
   Task* idleTask = new Idle(LED_UNO, LED_DUE, BUTTON_END);
-
+  Task* sleepTask = new SleepMode(LED_UNO, PIR);
+  
   scheduler.init(100);
   
   idleTask -> init(SLEEP_TIME);
@@ -47,11 +57,16 @@ void setup(){
   errorTask -> init(ERROR_TIME);
   errorTask -> setActive(false);
 
+  sleepTask -> init();
+  sleepTask -> setActive(false);
+
   scheduler.addTask(idleTask);
   scheduler.addTask(errorTask);
-  
+  scheduler.addTask(sleepTask);
+
 }
 
 void loop() {
   scheduler.schedule();
+  //Serial.println("print");
 }

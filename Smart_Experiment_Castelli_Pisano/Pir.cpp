@@ -6,6 +6,6 @@ Pir::Pir(int pinPir){
   pinMode(pinPir,INPUT);
 }
 
-int Pir::checkPresence(){
+int Pir::getPresence(){
   return digitalRead(pinPir);
 }

@@ -12,10 +12,11 @@
 #define DHTTYPE DHT11
 
 #include "DHT.h"
-#include "servo_motor_impl.h"
+//#include "servo_motor_impl.h"
+#include <EnableInterrupt.h>
 
 DHT dht(SENS_TEMP_HUM, DHTTYPE);
-ServoMotor* pMotor;
+//ServoMotor* pMotor;
 
 const double vs = 331.45 + 0.62*20;
 int pos, delta;
@@ -43,19 +44,23 @@ void setup(){
   Serial.println("PIR SENSOR READY.");
   dht.begin("DHT SENSOR READY.");
 
-  pMotor = new ServoMotorImpl(6);
+  //pMotor = new ServoMotorImpl(6);
   pos = 0;
   delta = 1;
+
+  //enableInterrupt(7, inc, RISING);
   
   delay(50);
 }
 void loop() {
 
   //Testing_Components
+  
+  
 
   //switchOnLeds(); 
   //readFromButtons();
-  //detectPir(); 
+  detectPir(); 
   //readDHT(); 
   //readFromPot(); 
   //readFromSonar();
@@ -65,6 +70,10 @@ void loop() {
 void detectPir(){
   if (digitalRead(PIR) == HIGH)
     Serial.println("detected!");  
+}
+
+void inc(){
+  Serial.println("found!");
 }
 
 void readDHT(){
@@ -121,7 +130,7 @@ float getDistance()
     return d;
 }
 
-void testServo(){
+/*void testServo(){
   pMotor->on();
   for (int i = 0; i < 180; i++) {
     //Serial.println(pos);
@@ -133,4 +142,4 @@ void testServo(){
   pos -= delta;
   delta = -delta;
   delay(1000);
-}
+}*/
