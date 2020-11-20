@@ -1,7 +1,7 @@
 #include "Scheduler.h"
 #include "Task.h"
-#include "Idle.h"
-#include "SleepMode.h"
+#include "IdleTask.h"
+#include "SleepModeTask.h"
 #include <TimerOne.h>
 #include <EnableInterrupt.h>
 
@@ -13,7 +13,6 @@ volatile boolean timerFlagScheduler;
 
 void timerHandler(void){
   timerFlagScheduler = true;
-  Serial.print("print");
 }
 
 void Scheduler::init(int basePeriod){
@@ -24,7 +23,7 @@ void Scheduler::init(int basePeriod){
   Timer1.attachInterrupt(timerHandler);
   nTasks = 0;
 
-  enableInterrupt(12, Idle::handleInterrupts, RISING);
+  enableInterrupt(12, IdleTask::handleInterrupts, RISING);
 }
 
 bool Scheduler::addTask(Task* task){
@@ -59,25 +58,34 @@ void Scheduler::schedule(){
 
 /*0 è idle
 1 è error
-2 sleep*/
+2 sleep
+3 running*/
 
 void Scheduler::redirectTask(int nextState){
-  Serial.println("Settt");
   switch(nextState){
     case 0:
       taskList[0] -> setActive(true);
+      Serial.println("Idle state");
       disableInterrupt(7);
-      enableInterrupt(12, Idle::handleInterrupts, RISING);
+      enableInterrupt(12, IdleTask::handleInterrupts, RISING);
       break;
     case 1:
       taskList[1] -> setActive(true);
+      Serial.println("Error state");
       disableInterrupt(12);
       disableInterrupt(7);
       break;
      case 2:
       taskList[2] -> setActive(true);
+      Serial.println("Sleep state");
       disableInterrupt(12);
-      enableInterrupt(7, SleepMode::wakeUp, RISING);
+      enableInterrupt(7, SleepModeTask::wakeUp, RISING);
+      break;
+     case 3:
+      taskList[3] -> setActive(true);
+      Serial.println("Running state");
+      disableInterrupt(12);
+      disableInterrupt(7);
       break;
   }
 }

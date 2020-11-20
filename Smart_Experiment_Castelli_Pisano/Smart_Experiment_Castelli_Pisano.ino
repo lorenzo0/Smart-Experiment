@@ -12,9 +12,10 @@
 #define DHTTYPE DHT11
 
 #include "Scheduler.h"
-#include "Idle.h"
+#include "IdleTask.h"
 #include "ErrorTask.h"
-#include "SleepMode.h"
+#include "SleepModeTask.h"
+#include "RunningTask.h"
 
 Scheduler scheduler;
 
@@ -36,7 +37,7 @@ void setup(){
 
   Serial.begin(9600);
 
-  Serial.print("Calibrating sensors... ");
+  /*Serial.print("Calibrating sensors... ");
   
   for(int i = 0; i < CALIBRATION_TIME_SEC; i++){
     Serial.print(".");
@@ -44,15 +45,16 @@ void setup(){
   }
   
   Serial.println("PIR SENSOR READY.");
-  
+  */
   Task* errorTask = new ErrorTask(LED_DUE);
-  Task* idleTask = new Idle(LED_UNO, LED_DUE, BUTTON_END);
-  Task* sleepTask = new SleepMode(LED_UNO, PIR);
+  Task* idleTask = new IdleTask(LED_UNO, LED_DUE, BUTTON_END);
+  Task* sleepTask = new SleepModeTask(LED_UNO, PIR);
+  Task* runningTask = new RunningTask(LED_UNO, LED_DUE, SONAR_ECHO, SONAR_TRIG, POT);
   
   scheduler.init(100);
   
   idleTask -> init(SLEEP_TIME);
-  idleTask -> setActive(true);
+  idleTask -> setActive(false);
   
   errorTask -> init(ERROR_TIME);
   errorTask -> setActive(false);
@@ -60,13 +62,17 @@ void setup(){
   sleepTask -> init();
   sleepTask -> setActive(false);
 
+  runningTask -> init(MAX_TIME);
+  runningTask -> setActive(true);
+
+
   scheduler.addTask(idleTask);
   scheduler.addTask(errorTask);
   scheduler.addTask(sleepTask);
+  scheduler.addTask(runningTask);
 
 }
 
 void loop() {
   scheduler.schedule();
-  //Serial.println("print");
 }

@@ -1,11 +1,11 @@
-#ifndef __SLEEPMODE__
-#define __SLEEPMODE__
+#ifndef __SLEEPMODETASK__
+#define __SLEEPMODETASK__
 
 #include "Task.h"
 #include "Led.h"
 #include "Pir.h"
 
-class SleepMode: public Task{
+class SleepModeTask: public Task{
   
   int pinLed1;
   int pinPir;
@@ -16,7 +16,7 @@ class SleepMode: public Task{
 
 public: 
 
-  SleepMode(int pinLed1, int pinPir);
+  SleepModeTask(int pinLed1, int pinPir);
   void init();  
   void tick();
   void sleep();

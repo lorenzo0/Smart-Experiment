@@ -16,7 +16,6 @@ public:
   ErrorTask(int pinLed2);//, Task* pIdleTask);
   void init(int period);  
   void tick();
-  void setActive(boolean cond);
   void blinkingLed();
 
 };

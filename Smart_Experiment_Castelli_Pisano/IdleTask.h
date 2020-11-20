@@ -1,19 +1,18 @@
-#ifndef __IDLE__
-#define __IDLE__
+#ifndef __IDLETASK__
+#define __IDLETASK__
 
 #include "Task.h"
 #include "Led.h"
 #include "Button.h"
 
-class Idle: public Task{  
+class IdleTask: public Task{  
 
 public: 
 
-  Idle(int pinLed1, int pinLed2, int pinButton);
+  IdleTask(int pinLed1, int pinLed2, int pinButton);
   void init(int period);  
   void tick();
   void static handleInterrupts();
-  void setActive(boolean cond);
 
 private:
 

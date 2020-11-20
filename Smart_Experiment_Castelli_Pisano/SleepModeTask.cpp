@@ -1,24 +1,24 @@
-#include "SleepMode.h"
+#include "SleepModeTask.h"
 #include "Arduino.h"
 #include "Pir.h"
 #include <avr/sleep.h>
 
 bool stopSleepMode;
 
-SleepMode::SleepMode(int pinLed1, int pinPir){
+SleepModeTask::SleepModeTask(int pinLed1, int pinPir){
   this -> pinLed1 = pinLed1;
   this -> pinPir = pinPir;
   stopSleepMode=false;
 }
 
-void SleepMode::init(){
+void SleepModeTask::init(){
   Task::init();
   
   led1 = new Led(pinLed1);
   pir = new Pir(pinPir);
 }
 
-void SleepMode::tick(){
+void SleepModeTask::tick(){
 
   sleep();
   
@@ -29,7 +29,7 @@ void SleepMode::tick(){
   stopSleepMode = false;
 }
 
-void SleepMode::sleep(){ 
+void SleepModeTask::sleep(){ 
   sleep_enable();
   set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
   
@@ -42,7 +42,7 @@ void SleepMode::sleep(){
   sleep_cpu();
 }
 
-void SleepMode::wakeUp(){
+void SleepModeTask::wakeUp(){
   sleep_disable();
   stopSleepMode=true;
 }

@@ -1,18 +1,18 @@
-#include "Idle.h"
+#include "IdleTask.h"
 #include "Arduino.h"
 #include "Scheduler.h"
 
 const int SLEEP_TIME  = 5 * 1000;
 bool stopIdle;
 
-Idle::Idle(int pinLed1, int pinLed2, int pinButton){
+IdleTask::IdleTask(int pinLed1, int pinLed2, int pinButton){
   this -> pinLed1 = pinLed1;
   this -> pinLed2 = pinLed2;
   this -> pinButton = pinButton;
   stopIdle = false;
 }
 
-void Idle::init(int period){
+void IdleTask::init(int period){
   Task::init(period);
   
   led1 = new Led(pinLed1);
@@ -29,7 +29,7 @@ void Idle::init(int period){
   stateButton = NOTCLICKED;
 }
 
-void Idle::tick(){
+void IdleTask::tick(){
   //Serial.println("Idle");
   Task::currentTs = millis();
 
@@ -43,6 +43,6 @@ void Idle::tick(){
   }
 }
 
-void Idle::handleInterrupts(){
+void IdleTask::handleInterrupts(){
   stopIdle = true;
 }
