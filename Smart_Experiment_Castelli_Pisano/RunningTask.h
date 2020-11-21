@@ -50,7 +50,6 @@ private:
   boolean written;
   int cont;
   
-  enum { ON, OFF } stateLed1, stateLed2;
   const double vs = 331.45 + 0.62*20;
 
 };

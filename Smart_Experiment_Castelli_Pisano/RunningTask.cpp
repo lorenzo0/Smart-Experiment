@@ -1,5 +1,4 @@
 #include "Sonar.h"
-#include "Led.h"
 #include "Arduino.h"
 #include "Potentiometer.h"
 #include "RunningTask.h"
@@ -36,12 +35,9 @@ void RunningTask::init(int period){
   pot = new Potentiometer(pinPot);
   sonar = new Sonar(pinEchoSonar, pinTrigSonar);
   pMotor = new ServoMotorImpl(pinServoMotor);
-  
-  led2 -> switchOn();
-  stateLed2 = ON;
+  pot = new Potentiometer(pinPot);
 
-  led1 -> switchOff();
-  stateLed2 = OFF;
+  Task::firstRun = false;
 
   for(int i=0; i<4; i++){
     pos[i] = 0;
@@ -50,6 +46,7 @@ void RunningTask::init(int period){
 
   //funziona la lettura ma il potenziometro è scazzato
   tempPot = 600;
+  //tempPot = pot -> readFromPotentiometer();
   
   Task::ts0 = millis();
   tStart = Task::ts0;
@@ -59,6 +56,13 @@ void RunningTask::init(int period){
 }
 
 void RunningTask::tick(){
+
+  if(!(Task::firstRun)){
+    led2 -> switchOn();
+    led1 -> switchOff();
+    Task::firstRun = true;
+  }
+  
   Task::currentTs = millis();
 
   /*
@@ -69,6 +73,7 @@ void RunningTask::tick(){
     Serial.println("Completato");
     Task::setCompleted();
     Task::setNextTask(0);
+    Task::firstRun = false;
   }else{
   
     while(Task::currentTs - tStart < tempPot){

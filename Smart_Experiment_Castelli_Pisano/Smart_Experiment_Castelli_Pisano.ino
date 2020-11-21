@@ -46,7 +46,7 @@ void setup(){
   
   Serial.println("SENSORS READY.");
   
-  Task* errorTask = new ErrorTask(LED_DUE);
+  Task* errorTask = new ErrorTask(LED_UNO, LED_DUE);
   Task* idleTask = new IdleTask(LED_UNO, LED_DUE, BUTTON_START);
   Task* sleepTask = new SleepModeTask(LED_UNO, PIR);
   Task* runningTask = new RunningTask(LED_UNO, LED_DUE, SONAR_ECHO, SONAR_TRIG, POT, SERVO_MOTOR);
@@ -54,7 +54,7 @@ void setup(){
   scheduler.init(100);
   
   idleTask -> init(SLEEP_TIME);
-  idleTask -> setActive(false);
+  idleTask -> setActive(true);
   
   errorTask -> init(ERROR_TIME);
   errorTask -> setActive(false);
@@ -63,7 +63,7 @@ void setup(){
   sleepTask -> setActive(false);
 
   runningTask -> init(MAX_TIME);
-  runningTask -> setActive(true);
+  runningTask -> setActive(false);
 
 
   scheduler.addTask(idleTask);

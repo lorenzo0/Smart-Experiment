@@ -24,9 +24,6 @@ private:
   LedImpl* led1;
   LedImpl* led2;
   Button* button;
-  
-  enum { ON, OFF } stateLed1, stateLed2;
-  enum { CLICKED, NOTCLICKED } stateButton;
 
 };
 

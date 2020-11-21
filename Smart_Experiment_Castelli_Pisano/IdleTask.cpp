@@ -21,16 +21,17 @@ void IdleTask::init(int period){
   
   button = new Button(pinButton);
 
-  led1 -> switchOn();
-  stateLed1 = ON;
-  
-  led2 -> switchOff();
-  stateLed2 = OFF;
-  
-  stateButton = NOTCLICKED;
+  Task::firstRun = false;
 }
 
 void IdleTask::tick(){
+  
+  if(!(Task::firstRun)){
+    led1 -> switchOn();
+    led2 -> switchOff();
+    Task::firstRun = true;
+  }
+  
   //Serial.println("Idle");
   Task::currentTs = millis();
 
@@ -38,9 +39,11 @@ void IdleTask::tick(){
     Task::setInterrupted();
     stopIdle = false;
     Task::setNextTask(1);
+    Task::firstRun = false;
   }else if(Task::currentTs - Task::ts0 > timeToCompleteTask){
     Task::setCompleted(); 
     Task::setNextTask(2);
+    Task::firstRun = false;
   }
 }
 

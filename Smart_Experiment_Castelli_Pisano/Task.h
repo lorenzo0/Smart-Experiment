@@ -8,15 +8,16 @@ private:
 
   int myPeriod;
   int timeElapsed;
-  bool active;
-  bool periodic;
-  bool completed;
-  bool interrupted;
+  boolean active;
+  boolean periodic;
+  boolean completed;
+  boolean interrupted;
   int nameNextTask;
   
 public:
 
   long ts0, currentTs;
+  boolean firstRun;
   
    /* periodic */
   virtual void init(int period){

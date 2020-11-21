@@ -11,8 +11,6 @@ class SleepModeTask: public Task{
   int pinPir;
   LedImpl* led1;
   Pir* pir;
-  enum { ON, OFF } stateLed1;
-
 
 public: 
 
