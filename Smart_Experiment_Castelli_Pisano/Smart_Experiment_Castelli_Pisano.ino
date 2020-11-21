@@ -49,7 +49,7 @@ void setup(){
   Task* errorTask = new ErrorTask(LED_DUE);
   Task* idleTask = new IdleTask(LED_UNO, LED_DUE, BUTTON_START);
   Task* sleepTask = new SleepModeTask(LED_UNO, PIR);
-  Task* runningTask = new RunningTask(LED_UNO, LED_DUE, BUTTON_END, SONAR_ECHO, SONAR_TRIG, POT, SERVO_MOTOR);
+  Task* runningTask = new RunningTask(LED_UNO, LED_DUE, SONAR_ECHO, SONAR_TRIG, POT, SERVO_MOTOR);
   
   scheduler.init(100);
   

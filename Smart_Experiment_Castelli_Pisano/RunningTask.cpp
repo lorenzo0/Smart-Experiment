@@ -15,7 +15,7 @@
 
 boolean stopRunning;
 
-RunningTask::RunningTask(int pinLed1, int pinLed2, int pinButtonStop, int pinEchoSonar,
+RunningTask::RunningTask(int pinLed1, int pinLed2, int pinEchoSonar,
                             int pinTrigSonar, int pinPot, int pinServoMotor){
   this->pinLed1 = pinLed1;
   this->pinLed2 = pinLed2;
@@ -23,7 +23,6 @@ RunningTask::RunningTask(int pinLed1, int pinLed2, int pinButtonStop, int pinEch
   this->pinTrigSonar = pinTrigSonar;
   this->pinPot = pinPot;
   this->pinServoMotor = pinServoMotor;
-  this->pinButtonStop = pinButtonStop;
 
   timeToCompleteTask = 0;
 }
@@ -36,7 +35,7 @@ void RunningTask::init(int period){
   led2 = new Led(pinLed2);
   pot = new Potentiometer(pinPot);
   sonar = new Sonar(pinEchoSonar, pinTrigSonar);
-  buttonToStop = new Button(pinButtonStop);
+  pMotor = new ServoMotorImpl(pinServoMotor);
   
   led2 -> switchOn();
   stateLed2 = ON;
@@ -112,10 +111,15 @@ void RunningTask::saveData(){
     tStart = Task::currentTs;
 }
 void RunningTask::calculateVelocity(int cont){
+  pMotor -> on();
 
   switch(cont){
     case 2: 
       vel_ist1 = (((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
+
+      pMotor->setPosition(vel_ist1*6);
+
+      delay(200);
 
       Serial.print("vel_ist1: ");
       Serial.println(vel_ist1);
@@ -125,6 +129,9 @@ void RunningTask::calculateVelocity(int cont){
     case 4:
 
       vel_ist2 = (((pos[3] - pos[2])*100) / ((t[3] - t[2])/1000));
+
+      pMotor->setPosition(vel_ist2*6);
+      delay(200);
 
       Serial.print("vel_ist2: ");
       Serial.println(vel_ist2);
@@ -138,7 +145,7 @@ void RunningTask::calculateVelocity(int cont){
       this->cont = 0;
       break;
   }
-
+  pMotor -> off();
 }
 
 void RunningTask::handleInterrupts(){

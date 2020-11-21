@@ -5,14 +5,14 @@
 #include "Sonar.h"
 #include "Led.h"
 #include "Potentiometer.h"
-#include "Servo/servo_motor_impl.h"
+#include "servo_motor_impl.h"
 #include "Button.h"
 
 class RunningTask: public Task{  
 
 public: 
 
-  RunningTask(int pinLed1, int pinLed2, int pinButtonStop, int pinEchoSonar,
+  RunningTask(int pinLed1, int pinLed2, int pinEchoSonar,
                 int pinTrigSonar, int pinPot, int pinServoMotor);
   void init(int period);  
   void tick();
@@ -39,7 +39,6 @@ private:
   Potentiometer* pot;
   Sonar* sonar;
   ServoMotor* pMotor;
-  Button* buttonToStop;
   
   float sonarData;
   float tempPot;  //da rimuovere
@@ -52,7 +51,6 @@ private:
   int cont;
   
   enum { ON, OFF } stateLed1, stateLed2;
-  enum { CLICKED, NOTCLICKED } stateButton;
   const double vs = 331.45 + 0.62*20;
 
 };
