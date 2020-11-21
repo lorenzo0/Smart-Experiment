@@ -17,6 +17,7 @@
 #include "ErrorTask.h"
 #include "SleepModeTask.h"
 #include "RunningTask.h"
+#include "TempAndHum.h"
 
 Scheduler scheduler;
 
@@ -50,6 +51,7 @@ void setup(){
   Task* idleTask = new IdleTask(LED_UNO, LED_DUE, BUTTON_START);
   Task* sleepTask = new SleepModeTask(LED_UNO, PIR);
   Task* runningTask = new RunningTask(LED_UNO, LED_DUE, SONAR_ECHO, SONAR_TRIG, POT, SERVO_MOTOR);
+  TempAndHum* tempAndHumidity = new TempAndHum(6);
   
   scheduler.init(100);
   
