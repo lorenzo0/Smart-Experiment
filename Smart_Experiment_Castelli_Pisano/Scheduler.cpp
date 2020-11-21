@@ -2,6 +2,7 @@
 #include "Task.h"
 #include "IdleTask.h"
 #include "SleepModeTask.h"
+#include "RunningTask.h"
 #include <TimerOne.h>
 #include <EnableInterrupt.h>
 
@@ -13,6 +14,7 @@ volatile boolean timerFlagScheduler;
 
 void timerHandler(void){
   timerFlagScheduler = true;
+  //Serial.println("timer handler!!");
 }
 
 void Scheduler::init(int basePeriod){
@@ -23,7 +25,8 @@ void Scheduler::init(int basePeriod){
   Timer1.attachInterrupt(timerHandler);
   nTasks = 0;
 
-  enableInterrupt(12, IdleTask::handleInterrupts, RISING);
+  
+  //enableInterrupt(8, IdleTask::handleInterrupts, RISING);
 }
 
 bool Scheduler::addTask(Task* task){
@@ -37,17 +40,18 @@ bool Scheduler::addTask(Task* task){
 }
   
 void Scheduler::schedule(){   
+  //Serial.println("hey");
   while (!timerFlagScheduler){}
   timerFlagScheduler = false;
-
-  //Serial.println("Going");
   
   for (int i = 0; i < nTasks; i++){
-    //Serial.println("Keep");
     
     while (taskList[i] -> isActive()){
-        if (taskList[i] -> updateAndCheckTime(basePeriod))
+      //Serial.println("Attivo!");
+        if (taskList[i] -> updateAndCheckTime(basePeriod)){
+          //Serial.println("Ci sono scheduler");
             taskList[i]->tick(); 
+        }
     }
     
     if (taskList[i] -> isInterrupted() || taskList[i] -> isCompleted())
@@ -67,25 +71,34 @@ void Scheduler::redirectTask(int nextState){
       taskList[0] -> setActive(true);
       Serial.println("Idle state");
       disableInterrupt(7);
-      enableInterrupt(12, IdleTask::handleInterrupts, RISING);
+      disableInterrupt(12);
+      enableInterrupt(8, IdleTask::handleInterrupts, RISING);
       break;
     case 1:
       taskList[1] -> setActive(true);
       Serial.println("Error state");
+      disableInterrupt(8);
       disableInterrupt(12);
       disableInterrupt(7);
       break;
      case 2:
       taskList[2] -> setActive(true);
       Serial.println("Sleep state");
+      disableInterrupt(8);
       disableInterrupt(12);
       enableInterrupt(7, SleepModeTask::wakeUp, RISING);
       break;
      case 3:
       taskList[3] -> setActive(true);
       Serial.println("Running state");
-      disableInterrupt(12);
+      disableInterrupt(8);
       disableInterrupt(7);
+      enableInterrupt(12, RunningTask::handleInterrupts, RISING);
       break;
   }
+}
+
+//send to serial
+void RunningTask::sendData(){
+  
 }

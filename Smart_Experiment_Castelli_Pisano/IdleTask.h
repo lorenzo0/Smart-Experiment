@@ -19,9 +19,12 @@ private:
   int pinLed1;
   int pinLed2;
   int pinButton;
+  int timeToCompleteTask;
+  
   LedImpl* led1;
   LedImpl* led2;
   Button* button;
+  
   enum { ON, OFF } stateLed1, stateLed2;
   enum { CLICKED, NOTCLICKED } stateButton;
 

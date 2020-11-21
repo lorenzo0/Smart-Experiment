@@ -12,11 +12,11 @@
 #define DHTTYPE DHT11
 
 #include "DHT.h"
-//#include "servo_motor_impl.h"
+#include "servo_motor_impl.h"
 #include <EnableInterrupt.h>
 
 DHT dht(SENS_TEMP_HUM, DHTTYPE);
-//ServoMotor* pMotor;
+ServoMotor* pMotor;
 
 const double vs = 331.45 + 0.62*20;
 int pos, delta;
@@ -44,7 +44,7 @@ void setup(){
   Serial.println("PIR SENSOR READY.");
   dht.begin("DHT SENSOR READY.");
 
-  //pMotor = new ServoMotorImpl(6);
+  pMotor = new servo_motor_impl(9);
   pos = 0;
   delta = 1;
 

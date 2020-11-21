@@ -3,10 +3,11 @@
 #define LED_DUE 5
 #define SENS_TEMP_HUM 4
 #define POT A0
-#define BUTTON_START 9
+#define BUTTON_START 8
 #define BUTTON_END 12
 #define SONAR_TRIG 10
 #define SONAR_ECHO 11
+#define SERVO_MOTOR 9
 
 #define CALIBRATION_TIME_SEC 10
 #define DHTTYPE DHT11
@@ -20,9 +21,8 @@
 Scheduler scheduler;
 
 const int SLEEP_TIME  = 5 * 1000;
-const int MAX_TIME = 20 * 1000;
+const int MAX_TIME = 10 * 1000; //sarebbe 20
 const int ERROR_TIME = 2 * 1000;
-
 
 void setup(){
   pinMode(PIR,INPUT);
@@ -37,19 +37,19 @@ void setup(){
 
   Serial.begin(9600);
 
-  /*Serial.print("Calibrating sensors... ");
+  Serial.print("Calibrating sensors... ");
   
   for(int i = 0; i < CALIBRATION_TIME_SEC; i++){
     Serial.print(".");
     delay(1000);
   }
   
-  Serial.println("PIR SENSOR READY.");
-  */
+  Serial.println("SENSORS READY.");
+  
   Task* errorTask = new ErrorTask(LED_DUE);
-  Task* idleTask = new IdleTask(LED_UNO, LED_DUE, BUTTON_END);
+  Task* idleTask = new IdleTask(LED_UNO, LED_DUE, BUTTON_START);
   Task* sleepTask = new SleepModeTask(LED_UNO, PIR);
-  Task* runningTask = new RunningTask(LED_UNO, LED_DUE, SONAR_ECHO, SONAR_TRIG, POT);
+  Task* runningTask = new RunningTask(LED_UNO, LED_DUE, BUTTON_END, SONAR_ECHO, SONAR_TRIG, POT, SERVO_MOTOR);
   
   scheduler.init(100);
   
@@ -74,5 +74,6 @@ void setup(){
 }
 
 void loop() {
+  //Serial.println("Ooooh");
   scheduler.schedule();
 }
