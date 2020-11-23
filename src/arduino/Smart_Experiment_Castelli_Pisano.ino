@@ -3,7 +3,7 @@
 #define LED_DUE 5
 #define SENS_TEMP_HUM 4
 #define POT A0
-#define BUTTON_START 8
+#define BUTTON_START 13
 #define BUTTON_END 12
 #define SONAR_TRIG 10
 #define SONAR_ECHO 11
@@ -21,8 +21,13 @@
 Scheduler scheduler;
 
 const int SLEEP_TIME  = 5 * 1000;
-const int MAX_TIME = 10 * 1000; //sarebbe 20
+const int MAX_TIME = 20 * 1000;
 const int ERROR_TIME = 2 * 1000;
+
+/*
+ * Le costanti relative alla frequenza del potenziometro, 
+ * vengono definite nella classe di implementazione 'Potentiometer.cpp'
+*/
 
 void setup(){
   pinMode(PIR,INPUT);
@@ -54,7 +59,7 @@ void setup(){
   scheduler.init(100);
   
   idleTask -> init(SLEEP_TIME);
-  idleTask -> setActive(true);
+  idleTask -> setActive(false);
   
   errorTask -> init(ERROR_TIME);
   errorTask -> setActive(false);
@@ -63,7 +68,7 @@ void setup(){
   sleepTask -> setActive(false);
 
   runningTask -> init(MAX_TIME);
-  runningTask -> setActive(false);
+  runningTask -> setActive(true);
 
 
   scheduler.addTask(idleTask);

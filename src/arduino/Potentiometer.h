@@ -10,6 +10,7 @@ public:
   
 private:
   int pin;  
+  float freq;
 };
 
 #endif

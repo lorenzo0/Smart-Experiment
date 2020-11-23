@@ -1,10 +1,10 @@
 #define PIR 7
 #define LED_UNO 3
 #define LED_DUE 5
-#define SENS_TEMP_HUM 4
+#define SENS_TEMP_HUM 13
 #define POT A0
-#define BUTTON_START 8
-#define BUTTON_END 12
+#define BUTTON_START 4
+#define BUTTON_END 13
 #define SONAR_TRIG 10
 #define SONAR_ECHO 11
 
@@ -12,11 +12,11 @@
 #define DHTTYPE DHT11
 
 #include "DHT.h"
-#include "servo_motor_impl.h"
+//#include "servo_motor_impl.h"
 #include <EnableInterrupt.h>
 
 DHT dht(SENS_TEMP_HUM, DHTTYPE);
-ServoMotor* pMotor;
+//ServoMotor* pMotor;
 
 const double vs = 331.45 + 0.62*20;
 int pos, delta;
@@ -34,7 +34,7 @@ void setup(){
   
   Serial.begin(9600);
   
-  Serial.print("Calibrating sensors... ");
+  /*Serial.print("Calibrating sensors... ");
   
   for(int i = 0; i < CALIBRATION_TIME_SEC; i++){
     Serial.print(".");
@@ -42,13 +42,14 @@ void setup(){
   }
   
   Serial.println("PIR SENSOR READY.");
-  dht.begin("DHT SENSOR READY.");
+  dht.begin("DHT SENSOR READY.");*/
 
-  pMotor = new servo_motor_impl(9);
+  //pMotor = new servo_motor_impl(9);
   pos = 0;
   delta = 1;
 
-  //enableInterrupt(7, inc, RISING);
+  enableInterrupt(BUTTON_START, inc, RISING);
+  enableInterrupt(BUTTON_END, inc1, RISING);
   
   delay(50);
 }
@@ -60,7 +61,7 @@ void loop() {
 
   //switchOnLeds(); 
   //readFromButtons();
-  detectPir(); 
+  //detectPir(); 
   //readDHT(); 
   //readFromPot(); 
   //readFromSonar();
@@ -73,7 +74,11 @@ void detectPir(){
 }
 
 void inc(){
-  Serial.println("found!");
+  Serial.println("BUTTON_START!");
+}
+
+void inc1(){
+  Serial.println("BUTTON_END!");
 }
 
 void readDHT(){
