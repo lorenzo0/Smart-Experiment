@@ -9,9 +9,6 @@ IdleTask::IdleTask(int pinLed1, int pinLed2, int pinButton){
   timeToCompleteTask = 0;
 }
 
-IdleTask::IdleTask(){
-}
-
 void IdleTask::init(int period){
   Task::init(period);
   timeToCompleteTask = period;

@@ -12,8 +12,6 @@
 */
 
 
-boolean stopRunning;
-
 RunningTask::RunningTask(int pinLed1, int pinLed2, int pinEchoSonar,
                             int pinTrigSonar, int pinPot, int pinServoMotor){
   this->pinLed1 = pinLed1;
@@ -65,6 +63,7 @@ void RunningTask::tick(){
     led2 -> switchOn();
     led1 -> switchOff();
     Task::firstRun = true;
+    Task::nameNextTask = 0;
   }
   
   Task::currentTs = millis();
@@ -73,7 +72,7 @@ void RunningTask::tick(){
    * in questa task non c'è differenza se viene interrotto o completato il task,
    * viene dunque gestito in modo singolo
   */
-  if(Task::currentTs - Task::ts0 > timeToCompleteTask || stopRunning){
+  if(Task::currentTs - Task::ts0 > timeToCompleteTask){
     Task::setCompleted();
     Task::setNextTask(0);
     Task::firstRun = false;
@@ -153,9 +152,4 @@ void RunningTask::calculateVelocity(int cont){
       break;
   }
   pMotor -> off();
-}
-
-void RunningTask::handleInterrupts(){
-  Serial.println("ueue");
-  stopRunning = true;
 }

@@ -26,9 +26,10 @@ void ErrorTask::tick(){
     led1 -> switchOff();
     led2 -> switchOn();
     Task::firstRun = true;
+    Serial.println("ErrorTask");
   }
     
-  Serial.println("ErrorTask");
+  
   Task::currentTs = millis();
 
   if(Task::currentTs - Task::ts0 > timeToCompleteTask){

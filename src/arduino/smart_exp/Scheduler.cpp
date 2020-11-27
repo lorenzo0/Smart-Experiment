@@ -51,6 +51,7 @@ void Scheduler::schedule(){
         else if (handleInterrupt == true){
             taskList[i]-> setActive(false);
             //Serial.println("Ci sono - 2");
+            delay(50);
             taskList[i]-> setInterrupted();
             
             handleInterrupt = false;
@@ -72,35 +73,35 @@ void Scheduler::schedule(){
 3 running*/
 
 void Scheduler::redirectTask(int nextState){
-  Serial.println("Ci sono - 4");
+  //Serial.println("Ci sono - 4");
   switch(nextState){
     case 0:
       taskList[0] -> setActive(true);
       Serial.println("Idle state");
-      disableInterrupt(7);
+      /*disableInterrupt(7);
       disableInterrupt(12);
-      enableInterrupt(8, handleInterrupts, RISING);
+      enableInterrupt(8, handleInterrupts, RISING);**/
       break;
     case 1:
       taskList[1] -> setActive(true);
       Serial.println("Error state");
-      disableInterrupt(8);
+      /*disableInterrupt(8);
       disableInterrupt(12);
-      disableInterrupt(7);
+      disableInterrupt(7);*/
       break;
      case 2:
       taskList[2] -> setActive(true);
       Serial.println("Sleep state");
-      disableInterrupt(8);
+      /*disableInterrupt(8);
       disableInterrupt(12);
-      enableInterrupt(7, handleInterrupts, RISING);
+      enableInterrupt(7, handleInterrupts, RISING);*/
       break;
      case 3:
       taskList[3] -> setActive(true);
       Serial.println("Running state");
-      disableInterrupt(8);
+      /*disableInterrupt(8);
       disableInterrupt(7);
-      enableInterrupt(12, handleInterrupts, RISING);
+      enableInterrupt(12, handleInterrupts, RISING);*/
       break;
   }
 }

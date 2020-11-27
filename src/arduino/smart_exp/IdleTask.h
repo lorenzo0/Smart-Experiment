@@ -10,7 +10,6 @@ class IdleTask: public Task{
 public: 
 
   IdleTask(int pinLed1, int pinLed2, int pinButton);
-  IdleTask();
   void init(int period);  
   void tick();
   void static handleInterrupts();
