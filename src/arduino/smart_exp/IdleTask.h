@@ -20,7 +20,7 @@ private:
   int pinLed1;
   int pinLed2;
   int pinButton;
-  int timeToCompleteTask;
+  const int SLEEP_TIME  = 5 * 1000;
   
   LedImpl* led1;
   LedImpl* led2;

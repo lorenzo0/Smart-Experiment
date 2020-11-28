@@ -17,12 +17,12 @@
 #include "ErrorTask.h"
 #include "SleepModeTask.h"
 #include "RunningTask.h"
+#include "Interrupts.h"
 
 Scheduler scheduler;
+extern boolean handleInterrupt;
 
-const int SLEEP_TIME  = 5 * 1000;
 const int MAX_TIME = 20 * 1000;
-const int ERROR_TIME = 2 * 1000;
 
 /*
  * Le costanti relative alla frequenza del potenziometro, 
@@ -56,20 +56,24 @@ void setup(){
   Task* sleepTask = new SleepModeTask(LED_UNO, PIR);
   Task* runningTask = new RunningTask(LED_UNO, LED_DUE, SONAR_ECHO, SONAR_TRIG, POT, SERVO_MOTOR);
   
-  scheduler.init(100);
+  scheduler.init(50);
+
+  Interrupts* handlingInterrupts = new Interrupts();
+  handlingInterrupts -> init();
   
-  idleTask -> init(SLEEP_TIME);
-  idleTask -> setActive(true);
+  idleTask -> init(50);
+  //idleTask -> setActive(true);
   
-  errorTask -> init(ERROR_TIME);
-  errorTask -> setActive(false);
+  errorTask -> init(50);
+  //errorTask -> setActive(false);
 
-  sleepTask -> init();
-  sleepTask -> setActive(false);
+  sleepTask -> init(50);
+  //sleepTask -> setActive(false);
 
-  runningTask -> init(MAX_TIME);
-  runningTask -> setActive(false);
+  runningTask -> init(50);
+  //runningTask -> setActive(false);
 
+  scheduler.setIndexCurrentTaskActive(0);
 
   scheduler.addTask(idleTask);
   scheduler.addTask(errorTask);
@@ -79,6 +83,5 @@ void setup(){
 }
 
 void loop() {
-  //Serial.println("Ooooh");
   scheduler.schedule();
 }

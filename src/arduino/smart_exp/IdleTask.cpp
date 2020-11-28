@@ -6,12 +6,10 @@ IdleTask::IdleTask(int pinLed1, int pinLed2, int pinButton){
   this -> pinLed1 = pinLed1;
   this -> pinLed2 = pinLed2;
   this -> pinButton = pinButton;
-  timeToCompleteTask = 0;
 }
 
 void IdleTask::init(int period){
   Task::init(period);
-  timeToCompleteTask = period;
   
   led1 = new Led(pinLed1);
   led2 = new Led(pinLed2);
@@ -27,12 +25,14 @@ void IdleTask::tick(){
     led1 -> switchOn();
     led2 -> switchOff();
     Task::firstRun = true;
-    Task::nameNextTask = 1;
+    Task::setNextTask(1);
+    Task::ts0 = millis();
   }
 
   Task::currentTs = millis();
+  Serial.println("Idle");
   
-  if(Task::currentTs - Task::ts0 > timeToCompleteTask){
+  if(Task::currentTs - Task::ts0 > SLEEP_TIME){
     Task::setCompleted(); 
     Task::setNextTask(2);
     Task::firstRun = false;

@@ -48,6 +48,14 @@ public:
     interrupted = true;
   }
 
+  void setNotInterrupted(){
+    interrupted = false;
+  }
+
+  void setNotCompleted(){
+    completed = false;
+  }
+
   void setNextTask(int nameNextTask){
     this -> nameNextTask = nameNextTask;
   }
@@ -56,6 +64,8 @@ public:
     timeElapsed = 0;
     active = cond;
     ts0 = millis();
+    interrupted = false;
+    completed = false;
   }
 
   int getNextTask(){

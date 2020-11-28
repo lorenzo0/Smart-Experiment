@@ -15,7 +15,7 @@ class SleepModeTask: public Task{
 public: 
 
   SleepModeTask(int pinLed1, int pinPir);
-  void init();  
+  void init(int period);  
   void tick();
   void sleep();
   void static wakeUp();

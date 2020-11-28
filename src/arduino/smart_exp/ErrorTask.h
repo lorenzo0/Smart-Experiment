@@ -19,6 +19,9 @@ public:
   void init(int period);  
   void tick();
 
+private: 
+  const int ERROR_TIME = 2 * 1000;
+
 };
 
 #endif

@@ -18,7 +18,10 @@ public:
   virtual bool addTask(Task* task);  
   virtual void schedule();
   virtual void redirectTask(int nextState);
-  static void handleInterrupts();
+  void setIndexCurrentTaskActive(int index);
+
+private:
+  int indexCurrentTaskActive=0;
 };
 
 /*0 è idle

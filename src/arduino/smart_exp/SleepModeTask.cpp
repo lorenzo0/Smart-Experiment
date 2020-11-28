@@ -11,8 +11,8 @@ SleepModeTask::SleepModeTask(int pinLed1, int pinPir){
   stopSleepMode=false;
 }
 
-void SleepModeTask::init(){
-  Task::init();
+void SleepModeTask::init(int period){
+  Task::init(period);
   
   led1 = new Led(pinLed1);
   pir = new Pir(pinPir);
@@ -27,13 +27,11 @@ void SleepModeTask::tick(){
     Task::firstRun = true;
   }
 
+  delay(500);
+  Serial.println("Sleep daje");
   sleep();
   
-  Task::setInterrupted();
-  Task::setNextTask(0);
   Task::firstRun = false;
-  /*Serial.println("PIR has detected something, wake up uaio");
-  Serial.println(pir->getPresence());*/
   stopSleepMode = false;
 }
 
