@@ -4,6 +4,7 @@
 #include "Task.h"
 #include "Led.h"
 #include "Pir.h"
+#include <avr/sleep.h>
 
 class SleepModeTask: public Task{
   

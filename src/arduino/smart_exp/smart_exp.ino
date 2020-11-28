@@ -19,12 +19,11 @@
 #include "RunningTask.h"
 #include "Interrupts.h"
 
-Scheduler scheduler;
-
 /*
  * Le costanti relative alla frequenza del potenziometro, 
  * vengono definite nella classe di implementazione 'Potentiometer.cpp'
 */
+Scheduler scheduler;
 
 void setup(){
   pinMode(PIR,INPUT);

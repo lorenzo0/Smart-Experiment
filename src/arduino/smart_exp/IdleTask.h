@@ -4,6 +4,7 @@
 #include "Task.h"
 #include "Led.h"
 #include "Button.h"
+#include "Scheduler.h"
 
 class IdleTask: public Task{  
 
@@ -12,8 +13,6 @@ public:
   IdleTask(int pinLed1, int pinLed2, int pinButton);
   void init(int period);  
   void tick();
-  void static handleInterrupts();
-  void setNextToGo();
 
 private:
 

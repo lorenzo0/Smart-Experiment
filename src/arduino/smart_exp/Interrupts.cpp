@@ -5,12 +5,10 @@
 boolean InterruptStart;
 boolean InterruptStop;
 boolean InterruptPir;
-
 long timeInterrupts=0;
 
 void handleInterruptsStart(){
   if(millis()-timeInterrupts>250){
-    //Serial.println("Detected start!");
     InterruptStart = true;
     timeInterrupts = millis();
   }
@@ -18,14 +16,12 @@ void handleInterruptsStart(){
 
 void handleInterruptsStop(){
   if(millis()-timeInterrupts>250){
-    //Serial.println("Detected stop!");
     InterruptStop = true;
     timeInterrupts = millis();
   }
 }
 
 void handleInterruptsPir(){
-  //Serial.println("Detected pir!");
   InterruptPir = true;
 }
 

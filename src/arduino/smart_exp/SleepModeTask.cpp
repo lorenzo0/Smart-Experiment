@@ -1,14 +1,9 @@
 #include "SleepModeTask.h"
 #include "Arduino.h"
-#include "Pir.h"
-#include <avr/sleep.h>
-
-bool stopSleepMode;
 
 SleepModeTask::SleepModeTask(int pinLed1, int pinPir){
   this -> pinLed1 = pinLed1;
   this -> pinPir = pinPir;
-  stopSleepMode=false;
 }
 
 void SleepModeTask::init(int period){
@@ -26,15 +21,12 @@ void SleepModeTask::tick(){
     led1 -> switchOff();
     Task::setFirstRun(true);
   }
-
-  delay(500);
-  Serial.println("Sleep daje");
+  
   sleep();
   
   Task::setFirstRun(false);
   Task::setNextTask(0);
   Task::setCompleted(true);
-  stopSleepMode = false;
 }
 
 void SleepModeTask::sleep(){ 
@@ -42,12 +34,12 @@ void SleepModeTask::sleep(){
   set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
 
   Serial.println("Going to sleep...");
-  delay(200);
+  delay(500);
   
   sleep_cpu();
 }
 
 void SleepModeTask::wakeUp(){
   sleep_disable();
-  stopSleepMode=true;
+  delay(500);
 }

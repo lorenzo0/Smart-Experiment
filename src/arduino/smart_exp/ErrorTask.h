@@ -6,13 +6,6 @@
 
 class ErrorTask: public Task{
 
-  int pinLed1;
-  int pinLed2;
-  int timeToCompleteTask;
-
-  LedImpl* led1;
-  LedImpl* led2;  
-
 public: 
 
   ErrorTask(int pinLed1, int pinLed2);
@@ -21,6 +14,12 @@ public:
 
 private: 
   const int ERROR_TIME = 2 * 1000;
+  
+  int pinLed1;
+  int pinLed2;
+
+  LedImpl* led1;
+  LedImpl* led2;  
 
 };
 

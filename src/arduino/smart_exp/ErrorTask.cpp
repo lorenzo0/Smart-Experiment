@@ -25,7 +25,6 @@ void ErrorTask::tick(){
     Task::setFirstRun(true);
   }
     
-  Serial.println("ErrorTask");
   Task::currentTs = millis();
 
   if(Task::currentTs - Task::ts0 > ERROR_TIME){

@@ -1,6 +1,5 @@
 #include "IdleTask.h"
 #include "Arduino.h"
-#include "Scheduler.h"
 
 IdleTask::IdleTask(int pinLed1, int pinLed2, int pinButton){
   this -> pinLed1 = pinLed1;

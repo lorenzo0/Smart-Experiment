@@ -3,15 +3,16 @@
 
 class Sonar{
   
-  int pinSonarEcho;
-  int pinSonarTrig;
-  
 public: 
 
   Sonar(int pinSonarEcho, int pinSonarTrig);
   float tick();
   float getDistance();
 
+private:
+
+  int pinSonarEcho;
+  int pinSonarTrig;
 };
 
 #endif
