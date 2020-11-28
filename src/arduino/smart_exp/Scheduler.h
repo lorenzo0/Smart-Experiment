@@ -22,6 +22,7 @@ public:
 
 private:
   int indexCurrentTaskActive=0;
+  int i=0;
 };
 
 /*0 è idle

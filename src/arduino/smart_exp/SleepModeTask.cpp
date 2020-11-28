@@ -17,21 +17,23 @@ void SleepModeTask::init(int period){
   led1 = new Led(pinLed1);
   pir = new Pir(pinPir);
 
-  Task::firstRun = false;
+  Task::setFirstRun(false);
 }
 
 void SleepModeTask::tick(){
 
   if(!(Task::firstRun)){
     led1 -> switchOff();
-    Task::firstRun = true;
+    Task::setFirstRun(true);
   }
 
   delay(500);
   Serial.println("Sleep daje");
   sleep();
   
-  Task::firstRun = false;
+  Task::setFirstRun(false);
+  Task::setNextTask(0);
+  Task::setCompleted(true);
   stopSleepMode = false;
 }
 

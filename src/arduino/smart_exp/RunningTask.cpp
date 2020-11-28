@@ -73,7 +73,7 @@ void RunningTask::tick(){
    * viene dunque gestito in modo singolo
   */
   if(Task::currentTs - Task::ts0 > timeToCompleteTask){
-    Task::setCompleted();
+    Task::setCompleted(true);
     Task::setNextTask(0);
     Task::firstRun = false;
   }else{

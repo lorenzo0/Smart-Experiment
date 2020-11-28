@@ -62,16 +62,9 @@ void setup(){
   handlingInterrupts -> init();
   
   idleTask -> init(50);
-  //idleTask -> setActive(true);
-  
   errorTask -> init(50);
-  //errorTask -> setActive(false);
-
   sleepTask -> init(50);
-  //sleepTask -> setActive(false);
-
   runningTask -> init(50);
-  //runningTask -> setActive(false);
 
   scheduler.setIndexCurrentTaskActive(0);
 

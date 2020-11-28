@@ -16,29 +16,26 @@ void IdleTask::init(int period){
   
   button = new Button(pinButton);
 
-  Task::firstRun = false;
+  Task::setFirstRun(false);
 }
 
 void IdleTask::tick(){
-  
+
   if(!(Task::firstRun)){
     led1 -> switchOn();
     led2 -> switchOff();
-    Task::firstRun = true;
+    Task::setFirstRun(true);
     Task::setNextTask(1);
     Task::ts0 = millis();
+    
   }
 
   Task::currentTs = millis();
   Serial.println("Idle");
   
   if(Task::currentTs - Task::ts0 > SLEEP_TIME){
-    Task::setCompleted(); 
+    Task::setCompleted(true); 
     Task::setNextTask(2);
-    Task::firstRun = false;
-  }/*else if(Task::isInterrupted()){
-    Serial.println("Hey");
-    Task::setNextTask(1);
-    Task::firstRun = false;
-  }*/
+    Task::setFirstRun(false);
+  }
 }
