@@ -20,9 +20,6 @@
 #include "Interrupts.h"
 
 Scheduler scheduler;
-extern boolean handleInterrupt;
-
-const int MAX_TIME = 20 * 1000;
 
 /*
  * Le costanti relative alla frequenza del potenziometro, 

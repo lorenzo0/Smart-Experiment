@@ -32,7 +32,6 @@ private:
   int pinPot;
   int pinServoMotor;
   int pinButtonStop;
-  int timeToCompleteTask;
   
   LedImpl* led1;
   LedImpl* led2;
@@ -51,6 +50,7 @@ private:
   int cont;
  
   const double vs = 331.45 + 0.62*20;
+  const int MAX_TIME = 20 * 1000;
 
 };
 

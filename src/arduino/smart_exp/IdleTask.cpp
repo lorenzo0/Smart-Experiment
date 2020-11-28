@@ -15,7 +15,6 @@ void IdleTask::init(int period){
   led2 = new Led(pinLed2);
   
   button = new Button(pinButton);
-
   Task::setFirstRun(false);
 }
 
@@ -25,13 +24,11 @@ void IdleTask::tick(){
     led1 -> switchOn();
     led2 -> switchOff();
     Task::setFirstRun(true);
-    Task::setNextTask(1);
+    Task::setNextTask(3);
     Task::ts0 = millis();
-    
   }
 
   Task::currentTs = millis();
-  Serial.println("Idle");
   
   if(Task::currentTs - Task::ts0 > SLEEP_TIME){
     Task::setCompleted(true); 

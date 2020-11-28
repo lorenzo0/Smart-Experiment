@@ -2,19 +2,35 @@
 #include "Arduino.h"
 #include <EnableInterrupt.h>
 
-boolean handleInterrupt;
+boolean InterruptStart;
+boolean InterruptStop;
+boolean InterruptPir;
+
 long timeInterrupts=0;
 
-void handleInterrupts(){
+void handleInterruptsStart(){
   if(millis()-timeInterrupts>250){
-    Serial.println("Ci sono - 1");
-    Serial.flush();
-    handleInterrupt = true;
+    //Serial.println("Detected start!");
+    InterruptStart = true;
     timeInterrupts = millis();
   }
 }
 
+void handleInterruptsStop(){
+  if(millis()-timeInterrupts>250){
+    //Serial.println("Detected stop!");
+    InterruptStop = true;
+    timeInterrupts = millis();
+  }
+}
+
+void handleInterruptsPir(){
+  //Serial.println("Detected pir!");
+  InterruptPir = true;
+}
+
 void Interrupts::init(){
-  enableInterrupt(8, handleInterrupts, RISING);
-  enableInterrupt(12, handleInterrupts, RISING);
+  enableInterrupt(8, handleInterruptsStart, RISING);
+  enableInterrupt(12, handleInterruptsStop, RISING);
+  enableInterrupt(7, handleInterruptsPir, RISING);
 }

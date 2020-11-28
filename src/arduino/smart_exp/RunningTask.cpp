@@ -20,13 +20,10 @@ RunningTask::RunningTask(int pinLed1, int pinLed2, int pinEchoSonar,
   this->pinTrigSonar = pinTrigSonar;
   this->pinPot = pinPot;
   this->pinServoMotor = pinServoMotor;
-
-  timeToCompleteTask = 0;
 }
 
 void RunningTask::init(int period){
   Task::init(period);
-  timeToCompleteTask = period;
 
   led1 = new Led(pinLed1);
   led2 = new Led(pinLed2);
@@ -35,26 +32,7 @@ void RunningTask::init(int period){
   pMotor = new ServoMotorImpl(pinServoMotor);
   pot = new Potentiometer(pinPot);
 
-  Task::firstRun = false;
-
-  for(int i=0; i<4; i++){
-    pos[i] = 0;
-    t[i] = 0;
-  }
-
-  //funziona la lettura ma il potenziometro è scazzato
-  tempPot = 400;
-  //tempPot = pot -> readFromPotentiometer();
-  
-  Task::ts0 = millis();
-  tStart = Task::ts0;
-
-  pMotor->on();
-    pMotor->setPosition(0);
-  pMotor->off();
-
-  cont = 0;
-
+  Task::setFirstRun(false);
 }
 
 void RunningTask::tick(){
@@ -62,8 +40,27 @@ void RunningTask::tick(){
   if(!(Task::firstRun)){
     led2 -> switchOn();
     led1 -> switchOff();
-    Task::firstRun = true;
-    Task::nameNextTask = 0;
+    Task::setFirstRun(true);
+    Task::setNextTask(0);
+
+    for(int i=0; i<4; i++){
+      pos[i] = 0;
+      t[i] = 0;
+    }
+
+    //funziona la lettura ma il potenziometro è scazzato
+    //tempPot = pot -> readFromPotentiometer();
+    tempPot = 400;
+    
+    
+    Task::ts0 = millis();
+    tStart = Task::ts0;
+  
+    pMotor->on();
+      pMotor->setPosition(0);
+    pMotor->off();
+  
+    cont = 0;
   }
   
   Task::currentTs = millis();
@@ -72,10 +69,9 @@ void RunningTask::tick(){
    * in questa task non c'è differenza se viene interrotto o completato il task,
    * viene dunque gestito in modo singolo
   */
-  if(Task::currentTs - Task::ts0 > timeToCompleteTask){
+  if(Task::currentTs - Task::ts0 > MAX_TIME){
     Task::setCompleted(true);
-    Task::setNextTask(0);
-    Task::firstRun = false;
+    Task::setFirstRun(false);
   }else{
   
     while(Task::currentTs - tStart < tempPot){

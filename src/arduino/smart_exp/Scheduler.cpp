@@ -5,12 +5,11 @@
 #include "RunningTask.h"
 #include <TimerOne.h>
 
-const int SLEEP_TIME  = 5 * 1000;
-const int MAX_TIME = 20 * 1000;
-const int ERROR_TIME = 2 * 1000;
-
 volatile boolean timerFlagScheduler;
-extern boolean handleInterrupt;
+
+extern boolean InterruptStart;
+extern boolean InterruptStop;
+extern boolean InterruptPir;
 
 void timerHandler(void){
   timerFlagScheduler = true;
@@ -19,7 +18,11 @@ void timerHandler(void){
 void Scheduler::init(int basePeriod){
   this->basePeriod = basePeriod;
   timerFlagScheduler = false;
-  handleInterrupt = false;
+  
+  InterruptStart = false;
+  InterruptStop = false;
+  InterruptPir = false;
+  
   long period = 1000l*basePeriod;
   Timer1.initialize(period);
   Timer1.attachInterrupt(timerHandler);
@@ -40,19 +43,35 @@ void Scheduler::schedule(){
   while (!timerFlagScheduler){}
   timerFlagScheduler = false;
   i = indexCurrentTaskActive;
-  Serial.println("I: "+String(i));
+  //Serial.println("I: "+String(i));
 
    if (taskList[i] -> updateAndCheckTime(basePeriod))
       taskList[i] -> tick();
-   if (handleInterrupt == true){
-      Serial.println("Ci sono - 2");
-      handleInterrupt = false;
+      
+   if (InterruptStart == true && i == 0){
+      //Serial.println("Ci sono - start");
+      InterruptStart = false;
+      taskList[i] -> setFirstRun(false);
       Scheduler::redirectTask(taskList[i] -> getNextTask());
-  }if(taskList[i]->isCompleted()){
+   }else if(InterruptStop == true && i == 3){
+      //Serial.println("Ci sono - stop");
+      InterruptStop = false;
+      taskList[i] -> setFirstRun(false);
+      Scheduler::redirectTask(taskList[i] -> getNextTask());
+   }else if(InterruptPir == true && i == 2){
+      //Serial.println("Ci sono - pir");
+      InterruptPir = false;
+      taskList[i] -> setFirstRun(false);
+      Scheduler::redirectTask(taskList[i] -> getNextTask());
+   }
+      
+   if(taskList[i]->isCompleted()){
       Serial.println("Task completato");
       Scheduler::redirectTask(taskList[i] -> getNextTask());
       taskList[i]->setCompleted(false);
   }
+
+  
 }
 
 /*0 è idle
