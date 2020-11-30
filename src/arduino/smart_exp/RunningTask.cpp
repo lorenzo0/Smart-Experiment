@@ -78,9 +78,14 @@ void RunningTask::tick(){
       Task::currentTs = millis();
     }
     
-    saveData();
+    //saveData();
+    sendSingleData();
   }
  
+}
+
+void RunningTask::sendSingleData(){
+  //inviare sonar -> getDistance();
 }
 
 void RunningTask::saveData(){

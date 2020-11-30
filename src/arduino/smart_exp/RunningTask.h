@@ -19,6 +19,7 @@ public:
   void sendData();
   void elaborateData();
   void saveData();
+  void sendSingleData();
   void static handleInterrupts();
   void calculateVelocity(int cont);
   
