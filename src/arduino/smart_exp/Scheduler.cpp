@@ -3,6 +3,7 @@
 #include "IdleTask.h"
 #include "SleepModeTask.h"
 #include "RunningTask.h"
+#include "MsgService.h"
 #include <TimerOne.h>
 
 volatile boolean timerFlagScheduler;
@@ -84,19 +85,19 @@ void Scheduler::redirectTask(int nextState){
   switch(nextState){
     case 0:
       setIndexCurrentTaskActive(0);
-      Serial.println("Idle state");
+      MsgService.sendMsg("IDLE");
       break;
     case 1:
       setIndexCurrentTaskActive(1);
-      Serial.println("Error state - 4");
+      MsgService.sendMsg("ERROR");
       break;
      case 2:
       setIndexCurrentTaskActive(2);
-      Serial.println("Sleep state");
+      MsgService.sendMsg("SLEEP");
       break;
      case 3:
       setIndexCurrentTaskActive(3);
-      Serial.println("Running state");
+      MsgService.sendMsg("RUNNING");
       break;
   }
   Serial.flush();

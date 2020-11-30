@@ -18,6 +18,7 @@
 #include "SleepModeTask.h"
 #include "RunningTask.h"
 #include "Interrupts.h"
+#include "MsgService.h"
 
 /*
  * Le costanti relative alla frequenza del potenziometro, 
@@ -38,14 +39,14 @@ void setup(){
 
   Serial.begin(9600);
 
-  /*Serial.print("Calibrating sensors... ");
+  //Serial.print("Calibrating sensors... ");
   
   for(int i = 0; i < CALIBRATION_TIME_SEC; i++){
     Serial.print(".");
     delay(1000);
   }
   
-  Serial.println("SENSORS READY.");*/
+  //Serial.println("SENSORS READY.");
   
   Task* errorTask = new ErrorTask(LED_UNO, LED_DUE);
   Task* idleTask = new IdleTask(LED_UNO, LED_DUE, BUTTON_START);

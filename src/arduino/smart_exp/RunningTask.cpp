@@ -2,6 +2,7 @@
 #include "Arduino.h"
 #include "Potentiometer.h"
 #include "RunningTask.h"
+#include "MsgService.h"
 
 /*
  * l'idea è quella di inviare, tramite seriale il minor numero di dati, data la poca memoria 
@@ -85,6 +86,7 @@ void RunningTask::tick(){
 }
 
 void RunningTask::sendSingleData(){
+  MsgService.sendMsg(String(sonar->getDistance()));
   //inviare sonar -> getDistance();
 }
 
