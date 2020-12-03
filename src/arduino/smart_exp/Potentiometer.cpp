@@ -17,13 +17,7 @@ Potentiometer::Potentiometer(int pin){
 }
 
 float Potentiometer::readFromPotentiometer(){
-
-  //1 : MAXFREQ = x : 1024
-  //toCheck
-
-  if(MAXFREQ < 1024)
-    freq = analogRead(pin) / (1024/MAXFREQ);
-  else
-    freq = analogRead(pin) / (MAXFREQ/1024);
+  //freqPot : 1024 = x : MAXFREQ
+    freq = analogRead(pin)*MAXFREQ / 1024;
   return freq;
 }

@@ -1,5 +1,6 @@
 #include "IdleTask.h"
 #include "Arduino.h"
+#include "MsgService.h"
 
 IdleTask::IdleTask(int pinLed1, int pinLed2, int pinButton){
   this -> pinLed1 = pinLed1;
@@ -20,6 +21,7 @@ void IdleTask::init(int period){
 void IdleTask::tick(){
 
   if(!(Task::firstRun)){
+    MsgService.sendMsg("IDLE");
     led1 -> switchOn();
     led2 -> switchOff();
     Task::setFirstRun(true);

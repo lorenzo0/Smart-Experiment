@@ -33,7 +33,7 @@ void SleepModeTask::sleep(){
   sleep_enable();
   set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
 
-  Serial.println("Going to sleep...");
+  //Serial.println("Going to sleep...");
   delay(500);
   
   sleep_cpu();

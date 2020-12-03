@@ -2,6 +2,8 @@ package SmartExperimentJava;
 
 import java.awt.EventQueue;
 
+import javax.swing.JFrame;
+
 import org.jfree.ui.RefineryUtilities;
 
 import jssc.*;
@@ -11,29 +13,16 @@ public class SerialComunication {
 	
 	
 	public static void main(String[] args) throws Exception {
-		boolean completed = true;		
+		boolean completed = true;
+		float pot=0;
 		
 		String[] portNames = SerialPortList.getPortNames();
-		CommChannel channel = new SerialCommChannel(portNames[0],9600);	
-		GraphicData data = new GraphicData();
-		
+		CommChannel channel = new SerialCommChannel(portNames[0],9600);		
 		
 		System.out.println("Waiting Arduino for rebooting...");		
 		Thread.sleep(1000);
 		System.out.println("Ready.");
-		Thread.sleep(1000);
-		
-		/*EventQueue.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                DTSCTest demo = new DTSCTest("oh no");
-                demo.pack();
-                RefineryUtilities.centerFrameOnScreen(demo);
-                demo.setVisible(true);
-                demo.start();
-            }
-        });*/
+		Thread.sleep(1000);		
 		
 		while(completed) {
 			String msg = channel.receiveMsg();
@@ -50,23 +39,26 @@ public class SerialComunication {
 				break;
 			case("RUNNING"):
 				System.out.println("THE EXPERIMENT IS RUNNING");
-				
-				running(channel);
+				msg = channel.receiveMsg();
+				pot = Float.parseFloat(msg);
+				System.out.println(pot);
+				running(channel,pot);
 				break;
 			case("COMPLETED"):
 				System.out.println("THE EXPERIMENT IS COMPLETED");
 				break;
 			}
-			Thread.sleep(50);
 		}
 	}
 	
-	public static void running(CommChannel channel) throws Exception {
+	public static void running(CommChannel channel, float pot ) throws Exception {
 		EventQueue.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                DTSCTest demo = new DTSCTest(channel);
+            	DTSCTest demo = new DTSCTest(channel, pot);
+            	System.out.println("pot:"+pot);
+            	demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 demo.pack();
                 RefineryUtilities.centerFrameOnScreen(demo);
                 demo.setVisible(true);

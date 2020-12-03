@@ -32,7 +32,8 @@ void RunningTask::init(int period){
   sonar = new Sonar(pinEchoSonar, pinTrigSonar);
   pMotor = new ServoMotorImpl(pinServoMotor);
   pot = new Potentiometer(pinPot);
-
+  firstVel= true;  
+  calcAcel=false;
   Task::setFirstRun(false);
 }
 
@@ -44,14 +45,17 @@ void RunningTask::tick(){
     Task::setFirstRun(true);
     Task::setNextTask(0);
 
-    for(int i=0; i<4; i++){
+    
+    
+    for(int i=0; i<2; i++){
       pos[i] = 0;
       t[i] = 0;
     }
-
+    
+    tempPot = 400;
+    MsgService.sendMsg(String(tempPot));
     //funziona la lettura ma il potenziometro è scazzato
     //tempPot = pot -> readFromPotentiometer();
-    tempPot = 400;
     
     
     Task::ts0 = millis();
@@ -79,80 +83,96 @@ void RunningTask::tick(){
       Task::currentTs = millis();
     }
     
-    //saveData();
-    sendSingleData();
+    saveData();
   }
- 
 }
 
-void RunningTask::sendSingleData(){
-  MsgService.sendMsg(String(sonar->getDistance()));
-  //inviare sonar -> getDistance();
-}
 
 void RunningTask::saveData(){
-  for(int i=0; i<4; i++){
+  for(int i=0; i<2; i++){
+    //Serial.println("Pos[i]: "+ String(pos[i]));
     if(pos[i] == 0 && written != true){
       pos[i] = sonar -> getDistance();
       t[i] = millis();
       written = true;
 
-      cont++;
-      calculateVelocity(cont);
+      calculateVelocity();
     }
   }
 
-  if(cont == 4){    
-       for(int y=0; y<4;y++){
-          pos[y] = 0;
-          t[y] = 0;
-       }
-    this->cont = 0;
+  if(cont == 1){    
+    for(int i=0; i<2; i++){
+      //Serial.println("Pos[i]: "+ String(pos[i]));
+    }
+    pos[0] = pos[1];
+    t[0] = t[1];
+    
+    pos[1] = 0;
+    t[1] = 0;
+    
+    cont = 0;
   }
 
     written = false;
     tStart = Task::currentTs;
 }
-void RunningTask::calculateVelocity(int cont){
+void RunningTask::calculateVelocity(){
   pMotor -> on();
 
-  switch(cont){
-    case 2: 
-      vel_ist1 = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
+  if(pos[1] != 0.0){
+    cont++;
+       if(firstVel==true){
+        vel_ist[0] = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
+        pMotor->setPosition(round(vel_ist[0]*6));
+        firstVel=false;
+        calcAcel=true;
+        MsgService.sendMsg(String(pos[0])+"|"+String(vel_ist[0])+"|0.0");
+        //send vel[0] + pos[0]
+      }else{
+        vel_ist[1] = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
+        pMotor->setPosition(round(vel_ist[0]*6));
+      }
+      /*if(vel_ist[0] != 0){
+        vel_ist[1] = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
+        pMotor->setPosition(85);
+      }else if(firstVel==true){
+        vel_ist[0] = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
+        pMotor->setPosition(round(vel_ist[0]*60));
+        firstVel=false;
+        MsgService.sendMsg(String(pos[0])+"|"+String(vel_ist[0]));
+        //send vel[0] + pos[0]
+      }*/
+
+     /* Serial.print("vel_ist[0]*6: ");
+      Serial.println(round(vel_ist[0]*6));*/
       
-      pMotor->setPosition(round(vel_ist1*6));
+      if(calcAcel){
+       /* Serial.println("-----------------");
+        Serial.print("vel_ist[1]*6: ");
+        Serial.println(round(vel_ist[1]*6));
+        Serial.print("vel_ist[0]*6: ");
+        Serial.println(round(vel_ist[0]*6));*/
+        acc_ist = ((vel_ist[1] - vel_ist[0]) / (( t[1] - t[0])/1000));
+        acc_ist = abs(acc_ist);
+        MsgService.sendMsg(String(pos[1])+"|"+String(vel_ist[1])+"|"+String(acc_ist));
+        //send pos[1] + vel[1] + acc_ist
 
-      delay(500);
+        /*Serial.print("acc_ist: ");
+        Serial.println(acc_ist);
+      
+        Serial.println("-----------------");*/
+      
+        vel_ist[0] = vel_ist[1];
+        vel_ist[1] = 0;        
+      }
 
-      /*Serial.print("vel_ist1: ");
-      Serial.println(vel_ist1);*/
-
-      Serial.print("vel_ist1*6: ");
-      Serial.println(round(vel_ist1*6));
-      Serial.println("-----------------");
-      break;
-
-    case 4:
-
-      vel_ist2 = abs(((pos[3] - pos[2])*100) / ((t[3] - t[2])/1000));
-
-      pMotor->setPosition(round(vel_ist2*6));
-      delay(500);
-
-      /*Serial.print("vel_ist2: ");
-      Serial.println(vel_ist2);*/
-
-      Serial.print("vel_ist2*6: ");
-      Serial.println(round(vel_ist2*6));
-
-      acc_ist = ((vel_ist2 - vel_ist1) / (( t[3] - t[1])/1000));
-      acc_ist = abs(acc_ist);
-
-      Serial.print("acc_ist: ");
-      Serial.println(acc_ist);
-    
-      Serial.println("-----------------");
-      break;
+      
+  }else{
+    MsgService.sendMsg(String(pos[0])+"|0.0|0.0"); 
+    //delay(1000);
+    firstVel=true;
   }
+    //Serial.println("Pos[0]: "+ String(pos[0]));
+    //send position
   pMotor -> off();
 }

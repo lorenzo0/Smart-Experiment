@@ -21,7 +21,7 @@ public:
   void saveData();
   void sendSingleData();
   void static handleInterrupts();
-  void calculateVelocity(int cont);
+  void calculateVelocity();
   
 
 private:
@@ -44,10 +44,10 @@ private:
   float tempPot;  //da rimuovere
   float potData;
 
-  float pos[4];
-  double t[4], tStart;
-  float vel_ist1, vel_ist2, acc_ist;
-  boolean written;
+  float pos[2], vel_ist[2];
+  double t[2], tStart;
+  float acc_ist;
+  boolean written, firstVel, calcAcel;
   int cont;
  
   const double vs = 331.45 + 0.62*20;

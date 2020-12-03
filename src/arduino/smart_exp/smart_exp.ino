@@ -41,10 +41,10 @@ void setup(){
 
   //Serial.print("Calibrating sensors... ");
   
-  for(int i = 0; i < CALIBRATION_TIME_SEC; i++){
+  /*for(int i = 0; i < CALIBRATION_TIME_SEC; i++){
     Serial.print(".");
     delay(1000);
-  }
+  }*/
   
   //Serial.println("SENSORS READY.");
   
@@ -54,6 +54,7 @@ void setup(){
   Task* runningTask = new RunningTask(LED_UNO, LED_DUE, SONAR_ECHO, SONAR_TRIG, POT, SERVO_MOTOR);
   
   scheduler.init(50);
+  MsgService.init();
 
   Interrupts* handlingInterrupts = new Interrupts();
   handlingInterrupts -> init();

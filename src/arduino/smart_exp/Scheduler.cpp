@@ -55,7 +55,7 @@ void Scheduler::schedule(){
       taskList[i] -> setFirstRun(false);
       Scheduler::redirectTask(taskList[i] -> getNextTask());
    }else if(InterruptStop == true && i == 3){
-      //Serial.println("Ci sono - stop");
+      MsgService.sendMsg("COMPLETED");
       InterruptStop = false;
       taskList[i] -> setFirstRun(false);
       Scheduler::redirectTask(taskList[i] -> getNextTask());
@@ -67,7 +67,7 @@ void Scheduler::schedule(){
    }
       
    if(taskList[i]->isCompleted()){
-      Serial.println("Task completato");
+      //Serial.println("Task completato");
       Scheduler::redirectTask(taskList[i] -> getNextTask());
       taskList[i]->setCompleted(false);
   }
@@ -81,7 +81,7 @@ void Scheduler::schedule(){
 3 running*/
 
 void Scheduler::redirectTask(int nextState){
-  Serial.println("Ci sono - 4");
+  //Serial.println("Ci sono - 4");
   switch(nextState){
     case 0:
       setIndexCurrentTaskActive(0);
