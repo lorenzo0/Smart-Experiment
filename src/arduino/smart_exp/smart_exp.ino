@@ -56,8 +56,8 @@ void setup(){
     }
    pMotor->off();
   
-  //Serial.println("SENSORS READY.");
-  //delay(200);
+  Serial.println("SENSORS READY.");
+  delay(200);
   
   Task* errorTask = new ErrorTask(LED_UNO, LED_DUE);
   Task* idleTask = new IdleTask(LED_UNO, LED_DUE, BUTTON_START);

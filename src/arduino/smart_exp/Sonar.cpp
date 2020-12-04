@@ -16,7 +16,7 @@ float Sonar:: tick(){
 
 float Sonar:: getDistance(){
   const double vs = 331.45 + 0.62*20;
-  Serial.println(String(temp -> getTemperature()));
+  //Serial.println(String(temp -> getTemperature()));
   //const double vs = 331.45 + 0.62*( temp -> getTemperature());
 
   digitalWrite(pinSonarTrig,LOW);

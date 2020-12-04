@@ -95,11 +95,11 @@ void Scheduler::redirectTask(int nextState){
       MsgService.sendMsg("SLEEP");
       break;
      case 3:
-     //if(InterruptPir){
+     if(InterruptPir){
       setIndexCurrentTaskActive(3);
       MsgService.sendMsg("RUNNING");
-     /*}else
-      Scheduler::redirectTask(1);*/
+     }else
+      Scheduler::redirectTask(1);
       break;
   }
   Serial.flush();

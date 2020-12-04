@@ -27,12 +27,14 @@ public class SerialComunication {
 		while(completed) {
 			String msg = channel.receiveMsg();
 			switch(msg) {
+			case("CALIBRATION"):
+				System.out.println("calibrating sensors...");
 			case("IDLE"):
 				System.out.println("System is ready!");
 				System.out.println("Press start button");
 				break;
 			case("ERROR"):
-				System.out.println("state: "+msg);
+				System.out.println("Object not detected");
 				break;
 			case("SLEEP"):
 				System.out.println("Going in sleep-mode");
