@@ -13,7 +13,7 @@ class RunningTask: public Task{
 public: 
 
   RunningTask(int pinLed1, int pinLed2, int pinEchoSonar,
-                int pinTrigSonar, int pinPot, int pinServoMotor);
+                int pinTrigSonar, int pinPot, int pinServoMotor, int pinTemp);
   void init(int period);  
   void tick();
   void sendData();
@@ -33,6 +33,7 @@ private:
   int pinPot;
   int pinServoMotor;
   int pinButtonStop;
+  int pinTemp;
   
   LedImpl* led1;
   LedImpl* led2;
@@ -52,6 +53,9 @@ private:
  
   const double vs = 331.45 + 0.62*20;
   const int MAX_TIME = 20 * 1000;
+
+  int delta =1;
+  int posServo;
 
 };
 

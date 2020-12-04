@@ -21,7 +21,7 @@ void IdleTask::init(int period){
 void IdleTask::tick(){
 
   if(!(Task::firstRun)){
-    MsgService.sendMsg("IDLE");
+    //MsgService.sendMsg("IDLE");
     led1 -> switchOn();
     led2 -> switchOff();
     Task::setFirstRun(true);

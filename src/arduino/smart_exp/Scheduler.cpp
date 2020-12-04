@@ -60,7 +60,6 @@ void Scheduler::schedule(){
       taskList[i] -> setFirstRun(false);
       Scheduler::redirectTask(taskList[i] -> getNextTask());
    }else if(InterruptPir == true && i == 2){
-      //Serial.println("Ci sono - pir");
       InterruptPir = false;
       taskList[i] -> setFirstRun(false);
       Scheduler::redirectTask(taskList[i] -> getNextTask());
@@ -96,8 +95,11 @@ void Scheduler::redirectTask(int nextState){
       MsgService.sendMsg("SLEEP");
       break;
      case 3:
+     //if(InterruptPir){
       setIndexCurrentTaskActive(3);
       MsgService.sendMsg("RUNNING");
+     /*}else
+      Scheduler::redirectTask(1);*/
       break;
   }
   Serial.flush();

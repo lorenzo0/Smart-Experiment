@@ -1,9 +1,12 @@
 #include "Arduino.h"
 #include "Sonar.h"
-#include "TempAndHum.h"
-Sonar::Sonar(int pinSonarEcho, int pinSonarTrig){
+
+Sonar::Sonar(int pinSonarEcho, int pinSonarTrig, int pinTemp){
   this->pinSonarEcho = pinSonarEcho;  
   this->pinSonarTrig = pinSonarTrig;
+  this->pinTemp = pinTemp;
+
+  temp = new TempAndHum(pinTemp);
 }
 
 float Sonar:: tick(){
@@ -13,7 +16,8 @@ float Sonar:: tick(){
 
 float Sonar:: getDistance(){
   const double vs = 331.45 + 0.62*20;
-  //const double vs = 331.45 + 0.62*( TempAndHum::getTemperature());
+  Serial.println(String(temp -> getTemperature()));
+  //const double vs = 331.45 + 0.62*( temp -> getTemperature());
 
   digitalWrite(pinSonarTrig,LOW);
   delayMicroseconds(3);

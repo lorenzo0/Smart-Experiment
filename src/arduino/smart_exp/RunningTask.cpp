@@ -14,22 +14,24 @@
 
 
 RunningTask::RunningTask(int pinLed1, int pinLed2, int pinEchoSonar,
-                            int pinTrigSonar, int pinPot, int pinServoMotor){
+                            int pinTrigSonar, int pinPot, int pinServoMotor, int pinTemp){
   this->pinLed1 = pinLed1;
   this->pinLed2 = pinLed2;
   this->pinEchoSonar = pinEchoSonar;
   this->pinTrigSonar = pinTrigSonar;
   this->pinPot = pinPot;
   this->pinServoMotor = pinServoMotor;
+  this->pinTemp = pinTemp;
 }
 
 void RunningTask::init(int period){
+  
   Task::init(period);
 
   led1 = new Led(pinLed1);
   led2 = new Led(pinLed2);
   pot = new Potentiometer(pinPot);
-  sonar = new Sonar(pinEchoSonar, pinTrigSonar);
+  sonar = new Sonar(pinEchoSonar, pinTrigSonar, pinTemp);
   pMotor = new ServoMotorImpl(pinServoMotor);
   pot = new Potentiometer(pinPot);
   firstVel= true;  
@@ -40,6 +42,7 @@ void RunningTask::init(int period){
 void RunningTask::tick(){
 
   if(!(Task::firstRun)){
+    
     led2 -> switchOn();
     led1 -> switchOff();
     Task::setFirstRun(true);
@@ -52,7 +55,7 @@ void RunningTask::tick(){
       t[i] = 0;
     }
     
-    tempPot = 400;
+    tempPot = 1000;
     MsgService.sendMsg(String(tempPot));
     //funziona la lettura ma il potenziometro è scazzato
     //tempPot = pot -> readFromPotentiometer();
@@ -118,30 +121,46 @@ void RunningTask::saveData(){
 }
 void RunningTask::calculateVelocity(){
   pMotor -> on();
-
+  
   if(pos[1] != 0.0){
     cont++;
        if(firstVel==true){
+        posServo =0;
         vel_ist[0] = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
-        pMotor->setPosition(round(vel_ist[0]*6));
+
+        for (int i = 0; i <= round(vel_ist[0]*6); i++) {
+          //Serial.println(posServo);
+          pMotor->setPosition(posServo);
+          delay(10);
+          posServo ++;
+        }
         firstVel=false;
         calcAcel=true;
         MsgService.sendMsg(String(pos[0])+"|"+String(vel_ist[0])+"|0.0");
-        //send vel[0] + pos[0]
+
       }else{
         vel_ist[1] = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
-        pMotor->setPosition(round(vel_ist[0]*6));
+        if (vel_ist[1]<=vel_ist[0]){
+          //Serial.println("sono in uno");
+          posServo = round(vel_ist[0]*6);
+          for (int i = 0; i <=round(vel_ist[0]*6-vel_ist[1]*6); i++) {
+            //Serial.println(posServo);
+            pMotor->setPosition(posServo);         
+            delay(10);
+            posServo --;
+          }
+        }else{
+          //Serial.println("sono in due");
+          posServo = round(vel_ist[0]*6);
+          for (int i = 0; i <=round(vel_ist[1]*6-vel_ist[0]*6); i++) {
+            //Serial.println(posServo);
+            pMotor->setPosition(posServo);         
+            delay(10);
+            posServo ++;
+          }
+        }
+       
       }
-      /*if(vel_ist[0] != 0){
-        vel_ist[1] = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
-        pMotor->setPosition(85);
-      }else if(firstVel==true){
-        vel_ist[0] = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
-        pMotor->setPosition(round(vel_ist[0]*60));
-        firstVel=false;
-        MsgService.sendMsg(String(pos[0])+"|"+String(vel_ist[0]));
-        //send vel[0] + pos[0]
-      }*/
 
      /* Serial.print("vel_ist[0]*6: ");
       Serial.println(round(vel_ist[0]*6));*/
@@ -165,6 +184,8 @@ void RunningTask::calculateVelocity(){
         vel_ist[0] = vel_ist[1];
         vel_ist[1] = 0;        
       }
+
+      delay(500);
 
       
   }else{

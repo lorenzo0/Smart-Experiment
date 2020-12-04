@@ -1,7 +1,7 @@
 #define PIR 7
 #define LED_UNO 3
 #define LED_DUE 5
-#define SENS_TEMP_HUM 13
+#define SENS_TEMP_HUM 6
 #define POT A0
 #define BUTTON_START 4
 #define BUTTON_END 13
@@ -44,9 +44,9 @@ void setup(){
   Serial.println("PIR SENSOR READY.");
   dht.begin("DHT SENSOR READY.");*/
 
-  //pMotor = new servo_motor_impl(9);
+  /*pMotor = new servo_motor_impl(9);
   pos = 0;
-  delta = 1;
+  delta = 1;*/
 
   enableInterrupt(BUTTON_START, inc, RISING);
   enableInterrupt(BUTTON_END, inc1, RISING);
@@ -62,7 +62,7 @@ void loop() {
   //switchOnLeds(); 
   //readFromButtons();
   //detectPir(); 
-  //readDHT(); 
+  readDHT(); 
   //readFromPot(); 
   //readFromSonar();
   //testServo();

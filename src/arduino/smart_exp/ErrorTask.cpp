@@ -19,10 +19,12 @@ void ErrorTask::init(int period){
 }
 
 void ErrorTask::tick(){
+  Serial.println("CI sono error--");
   if(!(Task::firstRun)){
     led1 -> switchOff();
     led2 -> switchOn();
     Task::setFirstRun(true);
+    Serial.println("CI sono error");
   }
     
   Task::currentTs = millis();
