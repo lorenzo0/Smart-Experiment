@@ -17,49 +17,59 @@ public class SerialComunication {
 		float pot=0;
 		
 		String[] portNames = SerialPortList.getPortNames();
-		CommChannel channel = new SerialCommChannel(portNames[0],9600);		
+		CommChannel channel = new SerialCommChannel(portNames[0],9600);	
+		//DTSCTest demo = new DTSCTest(channel, pot);
 		
-		System.out.println("Waiting Arduino for rebooting...");		
+		System.out.println("Waiting Arduino for rebooting and calibrating: ");		
 		Thread.sleep(1000);
-		System.out.println("Ready.");
-		Thread.sleep(1000);		
+		System.out.println(".");
+		Thread.sleep(1000);
+		System.out.println(".");
+		Thread.sleep(1000);
+		System.out.println(".");
+		Thread.sleep(1000);
+		System.out.println(".");
+		Thread.sleep(1000);
+		System.out.println(".");
+		Thread.sleep(1000);
+		System.out.println(".");
+		System.out.println("SYSTEM IS READY.");
+			
 		
 		while(completed) {
 			String msg = channel.receiveMsg();
 			switch(msg) {
-			case("CALIBRATION"):
-				System.out.println("calibrating sensors...");
 			case("IDLE"):
-				System.out.println("System is ready!");
-				System.out.println("Press start button");
+				//demo.stop();
+				System.out.println("IDLE Press start button");
 				break;
 			case("ERROR"):
-				System.out.println("Object not detected");
+				System.out.println("ERROR: Object not detected");
 				break;
 			case("SLEEP"):
-				System.out.println("Going in sleep-mode");
+				System.out.println("SLEEP: Going in sleep-mode");
 				break;
 			case("RUNNING"):
 				System.out.println("THE EXPERIMENT IS RUNNING");
 				msg = channel.receiveMsg();
 				pot = Float.parseFloat(msg);
-				System.out.println(pot);
-				running(channel,pot);
+				running(channel, pot);
 				break;
 			case("COMPLETED"):
-				System.out.println("THE EXPERIMENT IS COMPLETED");
+				//demo.stop();
+				//System.out.println("THE EXPERIMENT IS COMPLETED");
 				break;
 			}
 		}
 	}
 	
-	public static void running(CommChannel channel, float pot ) throws Exception {
+	public static void running(CommChannel channel,float pot) throws Exception {
+		Viewer demo = new Viewer(channel, pot);
 		EventQueue.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-            	DTSCTest demo = new DTSCTest(channel, pot);
-            	System.out.println("pot:"+pot);
+            	//System.out.println("pot:"+pot);
             	demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 demo.pack();
                 RefineryUtilities.centerFrameOnScreen(demo);
@@ -67,6 +77,7 @@ public class SerialComunication {
                 demo.start();
             }
         });
+		demo.stop();
 	}
 
 }

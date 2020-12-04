@@ -37,7 +37,7 @@ public class GraphicData extends JFrame {
 
 	public float getSpeed() {
 		if(countSpeed<speed.size() && speed.size()>0) {
-			System.out.println("SPEED "+speed.get(countSpeed)+"   "+ countSpeed);
+			//System.out.println("SPEED "+speed.get(countSpeed)+"   "+ countSpeed);
 			return speed.get(countSpeed++);
 		}else
 			return 0;
@@ -45,7 +45,7 @@ public class GraphicData extends JFrame {
 	
 	public float getAcel() {
 		if(countAcel<acel.size() && acel.size()>0) {
-			System.out.println("ACELERATION "+acel.get(countAcel)+"   "+ countAcel);
+			//System.out.println("ACELERATION "+acel.get(countAcel)+"   "+ countAcel);
 			return acel.get(countAcel++);
 		}else
 			return 0;
