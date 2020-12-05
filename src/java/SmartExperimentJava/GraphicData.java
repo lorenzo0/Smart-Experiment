@@ -3,11 +3,12 @@ package SmartExperimentJava;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 
+
+/*tramite questa classe vengono memorizzati i valori di
+ * posizione, velocita' e accelerazioni per la durata di tutto l'esperimento
+ * al temine venngono cancellati tramite delData().
+ */
 public class GraphicData extends JFrame {
-	/**
-	 * 
-	 */
-	//private static final long serialVersionUID = 1L;
 	ArrayList<Float> speed;
 	ArrayList<Float> pos;
 	ArrayList<Float> acel;
@@ -35,9 +36,11 @@ public class GraphicData extends JFrame {
 		acel.add(val);
 	}
 
+	/*
+	 * tramite questi due metodi vengono inviati i dati al grafico
+	 */
 	public float getSpeed() {
 		if(countSpeed<speed.size() && speed.size()>0) {
-			//System.out.println("SPEED "+speed.get(countSpeed)+"   "+ countSpeed);
 			return speed.get(countSpeed++);
 		}else
 			return 0;
@@ -45,7 +48,6 @@ public class GraphicData extends JFrame {
 	
 	public float getAcel() {
 		if(countAcel<acel.size() && acel.size()>0) {
-			//System.out.println("ACELERATION "+acel.get(countAcel)+"   "+ countAcel);
 			return acel.get(countAcel++);
 		}else
 			return 0;
