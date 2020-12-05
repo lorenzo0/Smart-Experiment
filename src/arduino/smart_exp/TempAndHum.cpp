@@ -20,6 +20,5 @@ float TempAndHum::getTemperature(){
 }
 
 float TempAndHum::getSpeedOfSound(){
-  //procedura torna dato in m/s
   return (331.45 + (0.42 * dht.readTemperature()));
 };

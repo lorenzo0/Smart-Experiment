@@ -16,6 +16,7 @@ void Led::switchOff(){
   digitalWrite(pin,LOW);
 };
 
+/* Gestione Blinking Led */
 void Led::blinking(){
   time = millis();
   fadeValue = 128+127*cos(2*PI/2000*time);

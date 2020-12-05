@@ -11,6 +11,9 @@ public:
 private:
   int pin;  
   float freq;
+
+  const int MAXFREQ = 1;
+  const int MINFREQ = 50;
 };
 
 #endif

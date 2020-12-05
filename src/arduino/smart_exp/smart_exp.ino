@@ -1,3 +1,23 @@
+/*
+ * AVVISO PER MODIFICARE LE COSTANTI RICHIESTE IN SPECIFICA.
+ * 
+ * Per modificare la minima e massima frequenza (in Hz) è necessario accedere alla classe Potentiometer.h
+ * Per modificare la massima durata delle varie task invece:
+ *    - SLEEP_TIME in IdleTask.h
+ *    - MAX_TIME in RunningTask.h
+ *    - ERROR_TIME in ErrorTask.h
+ *    
+ * Come richiesto, vengono inizialmente impostate così di seguito:
+ *    - SLEEP_TIME  = 5 secondi
+ *    - MAX_TIME = 20 secondi
+ *    - ERROR_TIME = 2 secondi
+ *    - MINFREQ = 1 Hz
+ *    - MAXFREQ = 50 Hz
+ *
+ * N.B La massima velocità viene definita a 30 cm/s visto l'ambiente dove viene eseguito.
+ * E' possibile comunque variare questo valore, stabilito a design time.
+*/
+
 #define PIR 7
 #define LED_UNO 3
 #define LED_DUE 5
@@ -21,12 +41,18 @@
 #include "MsgService.h"
 #include "servo_motor_impl.h"
 
-/*
- * Le costanti relative alla frequenza del potenziometro, 
- * vengono definite nella classe di implementazione 'Potentiometer.cpp'
-*/
 Scheduler scheduler;
 ServoMotor* pMotor;
+
+/* 
+ *  In setup viene prevista una calibratura dei sensori, in particolare
+ *  viene messo in azione il servomotore. Vengono inizializzate le task che sono previste
+ *  per il corretto funzionamento del sistema;
+ *    - idle task, stato di attesa
+ *    - error task, si vuole mandare in esecuzione l'esperimento ma non viene identificato nessun oggetto
+ *    - sleep task, risparmio energetico (modalità power down) massimo di arduino, rimane in ascolto l'interrupt handler
+ *    - running task, task di esecuzioned dell'esperimento
+*/
 
 void setup(){
   pinMode(PIR,INPUT);
@@ -40,7 +66,6 @@ void setup(){
   pinMode(LED_DUE,OUTPUT);
 
   Serial.begin(9600);
-
   
   pMotor = new ServoMotorImpl(9);
   

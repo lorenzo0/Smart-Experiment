@@ -3,8 +3,10 @@
 
 #include "Arduino.h"
 
+
+/* Classe Messaggio, contiene il suo costruttore ed un getter per ricavare il messaggio */
 class Msg {
-  String content;
+String content;
 
 public:
   Msg(String content){
@@ -29,18 +31,14 @@ public:
   bool msgAvailable;
 
   void init();  
-
-  bool isMsgAvailable();
-  Msg* receiveMsg();
-
-  bool isMsgAvailable(Pattern& pattern);
-
-  /* note: message deallocation is responsibility of the client */
-  Msg* receiveMsg(Pattern& pattern);
-  
   void sendMsg(const String& msg);
+  bool isMsgAvailable();
+  bool isMsgAvailable(Pattern& pattern);
+  Msg* receiveMsg();
+  Msg* receiveMsg(Pattern& pattern);
 };
 
+/* condivisione variabile all'esterno della classe stessa */
 extern MsgServiceClass MsgService;
 
 #endif

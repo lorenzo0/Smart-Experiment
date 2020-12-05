@@ -1,9 +1,6 @@
 #include "ErrorTask.h"
 #include "Arduino.h"
 
-long time; 
-float fadeValue;
-
 ErrorTask::ErrorTask(int pinLed1, int pinLed2){
   this -> pinLed2 = pinLed2;
   this -> pinLed1 = pinLed1;
@@ -27,8 +24,8 @@ void ErrorTask::tick(){
     led2 -> switchOn();
     Task::setFirstRun(true);
     Task::ts0 = millis();
-    Serial.println("CI sono error");
   }
+  
   Task::currentTs = millis();
 
   if(Task::currentTs - Task::ts0 > ERROR_TIME){

@@ -14,10 +14,14 @@ float Sonar:: tick(){
   return distance;
 }
 
+/* 
+ * Avendo il sensore di temperatura, possiamo calcolare la velocità del suono.
+ * Sfruttiamo quest'ultima nella formula con la quale viene definita la distanza tra il
+ * sonar e l'oggetto.
+*/
+
 float Sonar:: getDistance(){
-  const double vs = 331.45 + 0.62*20;
-  //Serial.println(String(temp -> getTemperature()));
-  //const double vs = 331.45 + 0.62*( temp -> getTemperature());
+  const double vs = 331.45 + 0.62*( temp -> getTemperature());
 
   digitalWrite(pinSonarTrig,LOW);
   delayMicroseconds(3);

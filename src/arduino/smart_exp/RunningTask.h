@@ -51,7 +51,6 @@ private:
   boolean written, firstVel, calcAcel;
   int cont;
  
-  const double vs = 331.45 + 0.62*20;
   const int MAX_TIME = 20 * 1000;
 
   int delta =1;

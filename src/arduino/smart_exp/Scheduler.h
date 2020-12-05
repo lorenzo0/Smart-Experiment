@@ -21,8 +21,9 @@ public:
   void setIndexCurrentTaskActive(int index);
 
 private:
-  int indexCurrentTaskActive=0;
-  int i=0;
+  int indexCurrentTaskActive;
+  int i;
+  long period;
 };
 
 /*0 è idle

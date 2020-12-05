@@ -4,7 +4,6 @@
 #include "Task.h"
 #include "Led.h"
 #include "Button.h"
-#include "Scheduler.h"
 
 class IdleTask: public Task{  
 
@@ -19,6 +18,8 @@ private:
   int pinLed1;
   int pinLed2;
   int pinButton;
+  
+  //costante che definisce la durata (espressa in millisecondi) della task di sleep
   const int SLEEP_TIME  = 5 * 1000;
   
   LedImpl* led1;

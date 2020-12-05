@@ -1,6 +1,4 @@
-#include "Sonar.h"
 #include "Arduino.h"
-#include "Potentiometer.h"
 #include "RunningTask.h"
 #include "MsgService.h"
 
@@ -34,11 +32,18 @@ void RunningTask::init(int period){
   sonar = new Sonar(pinEchoSonar, pinTrigSonar, pinTemp);
   pMotor = new ServoMotorImpl(pinServoMotor);
   pot = new Potentiometer(pinPot);
+  
   firstVel= true;  
   calcAcel=false;
+  
   Task::setFirstRun(false);
 }
 
+/*
+   * Nella task Running non c'è differenza se il task viene interrotto o completato,
+   * viene dunque gestito in modo singolo, assegnando il nextTask allo stato di Idle
+*/
+  
 void RunningTask::tick(){
 
   if(!(Task::firstRun)){
@@ -46,42 +51,34 @@ void RunningTask::tick(){
     led2 -> switchOn();
     led1 -> switchOff();
     Task::setFirstRun(true);
-    Task::setNextTask(0);
-
-    
+    Task::setNextTask(0);    
     
     for(int i=0; i<2; i++){
       pos[i] = 0;
       t[i] = 0;
     }
     
-    tempPot = 1000;
-    MsgService.sendMsg(String(tempPot));
-    //funziona la lettura ma il potenziometro è scazzato
-    //tempPot = pot -> readFromPotentiometer();
-    
+    tempPot = pot -> readFromPotentiometer();
+    MsgService.sendMsg(String(tempPot));    
     
     Task::ts0 = millis();
-    tStart = Task::ts0;
-  
-    pMotor->on();
-      pMotor->setPosition(0);
-    pMotor->off();
-  
+    tStart = Task::ts0;  
     cont = 0;
   }
   
   Task::currentTs = millis();
 
-  /*
-   * in questa task non c'è differenza se viene interrotto o completato il task,
-   * viene dunque gestito in modo singolo
-  */
   if(Task::currentTs - Task::ts0 > MAX_TIME){
     Task::setCompleted(true);
     Task::setFirstRun(false);
   }else{
-  
+
+    /* 
+     *  Devo eseguire saveData ogni -tot- millisecondi, 
+     *  riempio dunque la distanza di questi due periodi attraverso
+     *  un while che porta il microprocessore in busy waiting
+    */
+    
     while(Task::currentTs - tStart < tempPot){
       Task::currentTs = millis();
     }
@@ -90,10 +87,28 @@ void RunningTask::tick(){
   }
 }
 
-
+/*
+ * La procedura saveData è strutturata in modo tale da mantenere all'interno di arduino il minor spazio di memoria occupato.
+ * Per farlo, è stato pensato un meccanismo composto da due strutture dati formate da due sole posizioni. 
+ * In queste, verranno memorizzate le ultime posizioni dell'oggetto in esame ed il tempo in cui sono state prese la misurazione.
+ * Una volta completato lo spazio previsto delle strutture dati (tempPot*2, alla seconda iterazione di saveData), viene calcolata la velocità
+ * istantanea_1 data dai dati a dispozione. Successivamente, viene sovrascritto in modo iterativo il dato in posizione [0] dal dato in 
+ * posizione [1]. Da questa situazione in poi, verranno calcolate le velocità istantanee in ogni ciclo. Quando si avranno a disposizione
+ * le due velocità istantanee verrà calcolata l'accellerazione istantanea. Come ultima operazione, viene prevista la sovra-scrittura della
+ * velocità in posizione [0] con quella in posizione [1]. 
+ * 
+ * Per la comunicazione tramite seriale viene definito un pattern d'invio delle informazioni composto da tre campi, divise dal carattere |.
+ * I dati inviati sono così strutturati:
+ *    posizione corrente|velocità istantanea|accellerazione istantanea
+ * 
+ * Nel caso in cui velocità e/o l'accellerazione non sono calcolate, viene inviato un dato pari a 0.0
+ * Nel programma JAVA viene poi gestita questa situazione.
+ * 
+ * N.B Questa procedura permette, oltre che occupare il minor spazio di memoria in arduino, anche di inviare solo le informazioni
+ * -necessarie- tramite seriale al programma Java. Facendo così ottimiziamo entrambi i processi, garantendo una trasmissione rapida dei dati tramite seriale.
+*/
 void RunningTask::saveData(){
   for(int i=0; i<2; i++){
-    //Serial.println("Pos[i]: "+ String(pos[i]));
     if(pos[i] == 0 && written != true){
       pos[i] = sonar -> getDistance();
       t[i] = millis();
@@ -103,10 +118,8 @@ void RunningTask::saveData(){
     }
   }
 
-  if(cont == 1){    
-    for(int i=0; i<2; i++){
-      //Serial.println("Pos[i]: "+ String(pos[i]));
-    }
+  if(cont == 1){
+    
     pos[0] = pos[1];
     t[0] = t[1];
     
@@ -119,20 +132,19 @@ void RunningTask::saveData(){
     written = false;
     tStart = Task::currentTs;
 }
+
+
 void RunningTask::calculateVelocity(){
   pMotor -> on();
   
   if(pos[1] != 0.0){
     cont++;
        if(firstVel==true){
-        posServo =0;
         vel_ist[0] = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
 
         for (int i = 0; i <= round(vel_ist[0]*6); i++) {
-          //Serial.println(posServo);
-          pMotor->setPosition(posServo);
+          pMotor->setPosition(i);
           delay(10);
-          posServo ++;
         }
         firstVel=false;
         calcAcel=true;
@@ -140,20 +152,22 @@ void RunningTask::calculateVelocity(){
 
       }else{
         vel_ist[1] = abs(((pos[1] - pos[0])*100) / ((t[1] - t[0])/1000));
+        
         if (vel_ist[1]<=vel_ist[0]){
-          //Serial.println("sono in uno");
+          
           posServo = round(vel_ist[0]*6);
+          
           for (int i = 0; i <=round(vel_ist[0]*6-vel_ist[1]*6); i++) {
-            //Serial.println(posServo);
             pMotor->setPosition(posServo);         
             delay(10);
             posServo --;
           }
+          
         }else{
-          //Serial.println("sono in due");
+          
           posServo = round(vel_ist[0]*6);
+          
           for (int i = 0; i <=round(vel_ist[1]*6-vel_ist[0]*6); i++) {
-            //Serial.println(posServo);
             pMotor->setPosition(posServo);         
             delay(10);
             posServo ++;
@@ -161,25 +175,11 @@ void RunningTask::calculateVelocity(){
         }
        
       }
-
-     /* Serial.print("vel_ist[0]*6: ");
-      Serial.println(round(vel_ist[0]*6));*/
       
       if(calcAcel){
-       /* Serial.println("-----------------");
-        Serial.print("vel_ist[1]*6: ");
-        Serial.println(round(vel_ist[1]*6));
-        Serial.print("vel_ist[0]*6: ");
-        Serial.println(round(vel_ist[0]*6));*/
         acc_ist = ((vel_ist[1] - vel_ist[0]) / (( t[1] - t[0])/1000));
         acc_ist = abs(acc_ist);
         MsgService.sendMsg(String(pos[1])+"|"+String(vel_ist[1])+"|"+String(acc_ist));
-        //send pos[1] + vel[1] + acc_ist
-
-        /*Serial.print("acc_ist: ");
-        Serial.println(acc_ist);
-      
-        Serial.println("-----------------");*/
       
         vel_ist[0] = vel_ist[1];
         vel_ist[1] = 0;        
@@ -190,10 +190,7 @@ void RunningTask::calculateVelocity(){
       
   }else{
     MsgService.sendMsg(String(pos[0])+"|0.0|0.0"); 
-    //delay(1000);
     firstVel=true;
   }
-    //Serial.println("Pos[0]: "+ String(pos[0]));
-    //send position
   pMotor -> off();
 }
